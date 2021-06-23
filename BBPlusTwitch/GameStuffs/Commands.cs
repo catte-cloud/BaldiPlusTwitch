@@ -31,8 +31,16 @@ namespace BBPlusTwitch
             TwitchManager.AddCommand("removebook", RemoveNotebook, 15);
             TwitchManager.AddCommand("alert-baldi", AlertBaldi, 20);
             TwitchManager.AddCommand("congratulate", BaldiSaysCongrats, 10);
-            TwitchManager.AddCommand("cause-event", CauseEvent, 10);
-            //TwitchManager.AddCommand("teleport", Teleport, 10);
+            TwitchManager.AddCommand("makesus", MakeSus, 15);
+            TwitchManager.AddCommand("teleport", Teleport, 20); //someone please fix this
+            TwitchManager.AddCommand("sellall", SellAll, 50);
+            TwitchManager.AddCommand("sendallnpcs", OhGodOhFuck, 55);
+            TwitchManager.AddCommand("mute", MuteGame, 50);
+
+            //the following commands can only be executed in johnny's shop
+
+            TwitchManager.AddCommand("shop-forcebuy", ForceBuy, 12);
+
         }
 
         public static bool AddYTPs(string person, string number)
@@ -41,9 +49,36 @@ namespace BBPlusTwitch
             {
                 return false;
             }
-            Singleton<CoreGameManager>.Instance.AddPoints(Math.Clamp(num, -200, 200), 0, true);
+            Singleton<CoreGameManager>.Instance.AddPoints(num, 0, true);
             return true;
         }
+
+
+        public static bool ForceBuy(string person, string number)
+        {
+            StoreScreen shop = GameObject.FindObjectOfType<StoreScreen>();
+            if ((!int.TryParse(number, out int num)) || shop == null)
+            {
+                return false;
+            }
+            shop.BuyItem(num);
+            return true;
+        }
+
+        public static bool OhGodOhFuck(string person, string number)
+        {
+            if (!Singleton<BaseGameManager>.Instance || !Singleton<CoreGameManager>.Instance)
+            {
+                return false;
+            }
+            EnvironmentController ec = Singleton<BaseGameManager>.Instance.CurrentEc;
+            foreach (NPC npc in ec.Npcs)
+            {
+                npc.TargetPosition(Singleton<CoreGameManager>.Instance.GetPlayer(0).transform.position);
+            }
+            return true;
+        }
+
 
         public static bool CollectNotebook(string person, string number)
         {
@@ -91,6 +126,18 @@ namespace BBPlusTwitch
             return true;
         }
 
+        public static bool MuteGame(string person, string number)
+        {
+            if (!Singleton<CoreGameManager>.Instance)
+            {
+                return false;
+            }
+            AudioListener.volume = 0f;
+            MonoLogicManager.Instance.TimeUntilUnmute = 0f;
+            MonoLogicManager.Instance.Muted = true;
+            return true;
+        }
+
         public static bool AlertBaldi(string person, string number)
         {
             if (!Singleton<CoreGameManager>.Instance || !Singleton<BaseGameManager>.Instance)
@@ -98,17 +145,21 @@ namespace BBPlusTwitch
                 return false;
             }
 
-            GameObject ecob = GameObject.Find(string.Concat(new object[]
+
+
+            Singleton<BaseGameManager>.Instance.CurrentEc.MakeNoise(Singleton<CoreGameManager>.Instance.GetPlayer(0).transform.position, 126);
+
+            return true;
+        }
+
+        public static bool MakeSus(string person, string number)
+        {
+            if (!Singleton<CoreGameManager>.Instance)
             {
-                "EC_",
-                Singleton<CoreGameManager>.Instance.Seed(),
-                "_",
-                Singleton<BaseGameManager>.Instance.levelObject.name
-            })); //make sure we find the right one
+                return false;
+            }
 
-            EnvironmentController ec = ecob.GetComponent<EnvironmentController>();
-
-            ec.MakeNoise(Singleton<CoreGameManager>.Instance.GetPlayer(0).transform.position, 126);
+            Singleton<CoreGameManager>.Instance.GetPlayer(0).RuleBreak("No Reason",5f);
 
             return true;
         }
@@ -121,6 +172,33 @@ namespace BBPlusTwitch
             }
             Singleton<CoreGameManager>.Instance.GetPlayer(0).itm.RemoveRandomItem();
             return true;
+        }
+
+        public static bool SellAll(string person, string number)
+        {
+            if (!Singleton<CoreGameManager>.Instance)
+            {
+                return false;
+            }
+            if (GameObject.FindObjectOfType<StoreScreen>() != null) //could cause problems
+            {
+                return false;
+            }
+            ItemManager itemman = Singleton<CoreGameManager>.Instance.GetPlayer(0).itm;
+            int TotalSellPrice = 0;
+            for (int i=0; i < itemman.items.Length; i++)
+            {
+                if (itemman.items[i].itemType != Items.None)
+                {
+                    TotalSellPrice += itemman.items[i].cost;
+                }
+                if (itemman.items[i].nameKey.Contains(")")) //detect tampered with items(aka chat given ones)
+                {
+                    TotalSellPrice += 25;
+                }
+                itemman.RemoveItem(i);
+            }
+            return AddYTPs(person,TotalSellPrice.ToString());
         }
 
         public static bool BaldiSaysCongrats(string person, string number)
@@ -149,37 +227,42 @@ namespace BBPlusTwitch
                     return false;
                 }
             }
+
+            item = GameObject.Instantiate(item);
             item.nameKey = Singleton<LocalizationManager>.Instance.GetLocalizedText(item.nameKey) + "\n(" + person + ")";
+
+            item.descKey = Singleton<LocalizationManager>.Instance.GetLocalizedText(item.descKey) + "\n(" + person + " from Twitch chat gifted this to you! How nice!)";
             Singleton<CoreGameManager>.Instance.GetPlayer(0).itm.AddItem(item);
 
 
             return true;
         }
 
-        public static bool CauseEvent(string person, string even)
+        //so close but i need to figure out how to detect "fake" fieldtrip entrances and have them give the items directly.
+        /*public static bool StartFieldtrip(string person, string tr)
         {
-            /*if ((!Enum.TryParse(even, true, out RandomEventType ev)) || !Singleton<CoreGameManager>.Instance)
+            if ((!Enum.TryParse(tr, true, out FieldTrips tri)) || !Singleton<CoreGameManager>.Instance)
             {
-                ev = RandomEventType.Fog;
+                tri = FieldTrips.Camping;
             }
-            RandomEvent Event = GeneralBaldiStuff.Events.ToList().Find(x => x. == ev);
-            if (item == null)
+            FieldTripObject trip = GeneralBaldiStuff.FieldTrips.ToList().Find(x => x.trip == tri);
+            if (trip == null)
             {
-                item = GeneralBaldiStuff.Items.ToList().Find(x => x.itemType == Items.Quarter);
-                if (item == null)
+                trip = GeneralBaldiStuff.FieldTrips.ToList().Find(x => x.trip == FieldTrips.Camping);
+                if (trip == null)
                 {
                     UnityEngine.Debug.LogError("Something has gone horribly wrong here!");
                     return false;
                 }
             }
-            item.nameKey = Singleton<LocalizationManager>.Instance.GetLocalizedText(item.nameKey) + "\n(" + person + ")";
-            Singleton<CoreGameManager>.Instance.GetPlayer(0).itm.AddItem(item);*/
+            
+            Singleton<CoreGameManager>.Instance.GetPlayer(0).itm.AddItem(item);
 
 
             return true;
-        }
+        }*/
 
-        /*public static bool Teleport(string person, string enu)
+        public static bool Teleport(string person, string enu)
         {
             ItemObject item = GeneralBaldiStuff.Items.ToList().Find(x => x.itemType == Items.Teleporter);
             if (item == null)
@@ -187,12 +270,13 @@ namespace BBPlusTwitch
                 UnityEngine.Debug.LogError("Something has gone horribly wrong here!");
                 return false;
             }
+            item = GameObject.Instantiate(item);
             item.item.gameObject.SetActive(true);
             item.item.Use(Singleton<CoreGameManager>.Instance.GetPlayer(0));
 
 
             return true;
-        }*/
+        }
 
 
     }

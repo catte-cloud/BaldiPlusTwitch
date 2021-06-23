@@ -25,7 +25,7 @@ namespace BBPlusTwitch
     class UpdateTextPatch
     {
         public static float TextSize = -1f;
-        static bool Prefix(UpdateTextPatch __instance, ref int textVal, ref string text, ref TMP_Text[] ___textBox) //Initialize initial connect menu
+        static bool Prefix(UpdateTextPatch __instance, ref int textVal, ref string text, ref TMP_Text[] ___textBox) //handle showing votes
         {
             if (textVal == 0)
             {

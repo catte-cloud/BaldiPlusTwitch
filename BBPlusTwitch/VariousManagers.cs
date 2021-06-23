@@ -38,7 +38,7 @@ namespace BBPlusTwitch
     public static class GeneralBaldiStuff
     {
         public static readonly ItemObject[] Items = Resources.FindObjectsOfTypeAll<ItemObject>();
-        public static readonly RandomEvent[] Events = Resources.FindObjectsOfTypeAll<RandomEvent>();
+        public static readonly FieldTripObject[] FieldTrips = Resources.FindObjectsOfTypeAll<FieldTripObject>();
     }
 
 

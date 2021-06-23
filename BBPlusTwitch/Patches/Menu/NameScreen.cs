@@ -51,11 +51,11 @@ namespace BBPlusTwitch
             GameObject newgam = new GameObject();
             newgam.name = "TwitchHandlerObject";
             newgam.AddComponent<TwitchConnectionHandler>();
+            GameObject newlod = new GameObject();
+            newlod.name = "MonoLogicObject";
+            newlod.AddComponent<MonoLogicManager>();
+
             IngameCommands.AddCommands();
-            foreach (RandomEvent rng in GeneralBaldiStuff.Events)
-            {
-                UnityEngine.Debug.Log(rng.name);
-            }
             //TwitchManager.AddCommand("test",TestFunction,3);
             return true;
         }
