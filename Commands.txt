@@ -1,0 +1,11 @@
+1. Clone A Random Character - CloneRandom
+2. Start the test lights - TestLight
+3. Remove a Noteboos - Notebook-
+4. Give a Noteboos - Notebook+
+5. Clear the map from all found rooms, tiles, and other things during a run. - ClearMap
+6. Force the player into a field trip minigame - FieldTripped
+7. Take a item from the player - BullyPlayer
+8. Force the player into a jumprope minigame - PlayPlayer
+9. Send the player into the detention room for a maximum of 10 seconds only. - DetentionPlayer
+10. Teleport the player somewhere random - RandoTelep
+11. Have the player win the level instantly - WinLev-Inst (can't be used in chaos, or in speedy)
