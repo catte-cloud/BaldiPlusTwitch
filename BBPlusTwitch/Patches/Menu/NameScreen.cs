@@ -51,7 +51,8 @@ namespace BBPlusTwitch
             GameObject newgam = new GameObject();
             newgam.name = "TwitchHandlerObject";
             newgam.AddComponent<TwitchConnectionHandler>();
-            TwitchManager.AddCommand("test",TestFunction,3);
+            IngameCommands.AddCommands();
+            //TwitchManager.AddCommand("test",TestFunction,3);
             return true;
         }
 
