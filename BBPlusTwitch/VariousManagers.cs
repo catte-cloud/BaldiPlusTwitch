@@ -68,7 +68,9 @@ namespace BBPlusTwitch
 
         public static Dictionary<string, List<string[]>> CommandVotes = new Dictionary<string, List<string[]>>();
 
+        public static float CommandCooldown = 5f;
 
+        public static bool CooldownEnabled;
 
         public static bool AddCommand(string cmd, Func<string,string, bool> func, int min = -1)
         {

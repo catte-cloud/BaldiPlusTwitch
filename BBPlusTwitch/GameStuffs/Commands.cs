@@ -32,7 +32,7 @@ namespace BBPlusTwitch
             TwitchManager.AddCommand("alert-baldi", AlertBaldi, 20);
             TwitchManager.AddCommand("congratulate", BaldiSaysCongrats, 10);
             TwitchManager.AddCommand("makesus", MakeSus, 15);
-            TwitchManager.AddCommand("teleport", Teleport, 20); //someone please fix this
+            //TwitchManager.AddCommand("teleport", Teleport, 20); //someone please fix this
             TwitchManager.AddCommand("sellall", SellAll, 50);
             TwitchManager.AddCommand("sendallnpcs", OhGodOhFuck, 55);
             TwitchManager.AddCommand("mute", MuteGame, 50);

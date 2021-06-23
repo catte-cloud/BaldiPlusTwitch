@@ -31,6 +31,8 @@ namespace BBPlusTwitch
                 ___nameList[0] = "Vanilla";
                 ___nameList[1] = "Speedy";
                 ___nameList[2] = "Chaos";
+                ___nameList[3] = "Chaos(5s)";
+                ___nameList[4] = "Chaos(15s)";
             }
             else
             {
@@ -76,16 +78,33 @@ namespace BBPlusTwitch
         {
             if (NameMenuManager.CurrentState == NameMenuState.ModeSelector)
             {
-                if (fileNo > 2)
+                if (!(fileNo > 2))
                 {
+                    NameMenuManager.CurrentState = NameMenuState.SaveSelect;
+                    SettingsManager.Mode = (TwitchMode)fileNo;
+                    //THANK YOU STACK OVERFLOW YOU HAVE SAVED MY LIFE
+                    __instance.InvokeMethod<NameManager>("Load");
+                    __instance.UpdateState();
                     return false;
                 }
-                NameMenuManager.CurrentState = NameMenuState.SaveSelect;
-                SettingsManager.Mode = (TwitchMode)fileNo;
-                //THANK YOU STACK OVERFLOW YOU HAVE SAVED MY LIFE
-                __instance.InvokeMethod<NameManager>("Load");
-                __instance.UpdateState();
-                return false;
+                else
+                {
+                    NameMenuManager.CurrentState = NameMenuState.SaveSelect;
+                    SettingsManager.Mode = TwitchMode.Chaos;
+                    TwitchManager.CooldownEnabled = true;
+                    if (fileNo == 3)
+                    {
+                        TwitchManager.CommandCooldown = 5f;
+                    }
+                    if (fileNo == 4)
+                    {
+                        TwitchManager.CommandCooldown = 15f;
+                    }
+                    //THANK YOU STACK OVERFLOW YOU HAVE SAVED MY LIFE
+                    __instance.InvokeMethod<NameManager>("Load");
+                    __instance.UpdateState();
+                    return false;
+                }
             }
             return NameMenuManager.CurrentState == NameMenuState.SaveSelect;
         }

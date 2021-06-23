@@ -35,13 +35,13 @@ namespace BBPlusTwitch
                 {
                     if (TwitchManager.Commands[kvp.Key].MinVotes != -1 && SettingsManager.Mode != TwitchMode.Chaos)
                     {
-                        builder.AppendLine(kvp.Key + "(" + kvp.Value.Count + ")");
+                        builder.AppendLine(kvp.Key + "(" + (((int)((float)TwitchManager.Commands[kvp.Key].MinVotes * (SettingsManager.Mode == TwitchMode.Speedy ? 0.5f : 1f))) - kvp.Value.Count) + ")");
                     }
                 }
                 text += builder.ToString();
                 if (TextSize == -1f)
                 {
-                    TextSize = ___textBox[textVal].fontSize * 0.75f;
+                    TextSize = ___textBox[textVal].fontSize * 0.5f;
                 }
                 ___textBox[textVal].fontSize = TextSize;
             }

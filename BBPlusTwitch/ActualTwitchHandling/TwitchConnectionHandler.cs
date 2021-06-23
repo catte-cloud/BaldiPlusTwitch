@@ -22,6 +22,7 @@ public class TwitchConnectionHandler : MonoBehaviour
     const string Prefix = "!";
 
     public float PingCounter;
+    public float CommandCooldown;
 
 
 
@@ -62,6 +63,7 @@ public class TwitchConnectionHandler : MonoBehaviour
     void Update()
     {
         PingCounter += Time.unscaledDeltaTime;
+        CommandCooldown += Time.unscaledDeltaTime;
 
         if (PingCounter > PingInterval)
         {
@@ -69,6 +71,7 @@ public class TwitchConnectionHandler : MonoBehaviour
             Writer.Flush();
             PingCounter = 0f;
         }
+
 
         if (!Twitch.Connected)
         {
@@ -88,58 +91,61 @@ public class TwitchConnectionHandler : MonoBehaviour
 
                 if (msg.StartsWith(Prefix))
                 {
-                    //this is a command, do shit
-                    int indexof = msg.IndexOf(" ");
-                    string cmd = indexof == -1 ? msg : msg.Substring(0, indexof);
-                    int cutoff = cmd.Length + 1;
-                    cmd = cmd.Substring(Prefix.Length);
-                    string param = "";
-                    if (cutoff < msg.Length)
+                    if (CommandCooldown > TwitchManager.CommandCooldown || !TwitchManager.CooldownEnabled)
                     {
-                        param = msg.Substring(cutoff);
-                    }
-                    TwitchCommand com;
-                    if (TwitchManager.Commands.TryGetValue(cmd, out com))
-                    {
-                        if (com.MinVotes == -1 || SettingsManager.Mode == TwitchMode.Chaos)
+                        CommandCooldown = 0f;
+                        //this is a command, do shit
+                        int indexof = msg.IndexOf(" ");
+                        string cmd = indexof == -1 ? msg : msg.Substring(0, indexof);
+                        int cutoff = cmd.Length + 1;
+                        cmd = cmd.Substring(Prefix.Length);
+                        string param = "";
+                        if (cutoff < msg.Length)
                         {
-                            com.functocall(chatter, param);
+                            param = msg.Substring(cutoff);
                         }
-                        else
+                        TwitchCommand com;
+                        if (TwitchManager.Commands.TryGetValue(cmd, out com))
                         {
-                            System.Random rng = new System.Random();
-                            int votestowin = com.MinVotes;
-                            List<string[]> votes = TwitchManager.CommandVotes[com.command];
-                            string[] dup = votes.Find(x => x[0] == chatter);
-                            if (dup == null ? true : dup.Length == 0)
+                            if (com.MinVotes == -1 || SettingsManager.Mode == TwitchMode.Chaos)
                             {
-                                TwitchManager.CommandVotes[com.command].Add(new string[2] {
-                                chatter,
-                                param
-                            });
+                                com.functocall(chatter, param);
                             }
                             else
                             {
-                                Debug.Log("Attempted duplicate vote: " + chatter);
+                                System.Random rng = new System.Random();
+                                int votestowin = (int)((float)com.MinVotes * (SettingsManager.Mode == TwitchMode.Speedy ? 0.5f : 1f));
+                                List<string[]> votes = TwitchManager.CommandVotes[com.command];
+                                string[] dup = votes.Find(x => x[0] == chatter);
+                                if (dup == null ? true : dup.Length == 0)
+                                {
+                                    TwitchManager.CommandVotes[com.command].Add(new string[2] {
+                                chatter,
+                                param
+                            });
+                                }
+                                else
+                                {
+                                    Debug.Log("Attempted duplicate vote: " + chatter);
+                                }
+
+                                if (votes.Count >= com.MinVotes)
+                                {
+                                    string[] persontocall = votes[rng.Next(0, votes.Count - 1)];
+                                    com.functocall(persontocall[0], persontocall[1]);
+                                    TwitchManager.CommandVotes[com.command] = new List<string[]>();
+                                }
+
+                                if (Singleton<BaseGameManager>.Instance)
+                                {
+                                    Singleton<BaseGameManager>.Instance.CollectNotebooks(0); //this is really stupid
+                                }
+
+
                             }
-
-                            if (votes.Count >= com.MinVotes)
-                            {
-                                string[] persontocall = votes[rng.Next(0, votes.Count - 1)];
-                                com.functocall(persontocall[0], persontocall[1]);
-                                TwitchManager.CommandVotes[com.command] = new List<string[]>();
-                            }
-
-                            if (Singleton<BaseGameManager>.Instance)
-                            {
-                                Singleton<BaseGameManager>.Instance.CollectNotebooks(0); //this is really stupid
-                            }
-
-
                         }
+
                     }
-
-
                 }
             }
 
