@@ -11,7 +11,7 @@ using UnityEngine.SceneManagement;
 using HarmonyLib; //god im hoping i got the right version of harmony
 //this code is reused from BaldiMP, lol
 
-namespace BaldiTwitch
+namespace BBPlusTwitch
 {
     [BepInPlugin("mtm101.rulerp.bbplus.balditwitch", "BB+ Twitch Intergration", "0.0.0.0")]
     public class BaldiTwitch : BaseUnityPlugin
