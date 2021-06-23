@@ -52,13 +52,20 @@ namespace BBPlusTwitch
     }
 
 
+   
+
     public static class TwitchManager
     {
 
         public static Dictionary<string, TwitchCommand> Commands = new Dictionary<string, TwitchCommand>();
 
+        public static Dictionary<string, List<string[]>> CommandVotes = new Dictionary<string, List<string[]>>();
+
+
+
         public static bool AddCommand(string cmd, Func<string,string, bool> func, int min = -1)
         {
+            CommandVotes.Add(cmd,new List<string[]>());
             return Commands.TryAdd(cmd,new TwitchCommand(cmd,"description missing",func,min));
         }
     }

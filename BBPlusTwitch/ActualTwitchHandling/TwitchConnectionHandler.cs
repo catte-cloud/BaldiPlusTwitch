@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using System.Text;
+using System.Linq;
 using System.Net.Sockets;
 using System.IO;
 using BBPlusTwitch;
@@ -57,6 +58,7 @@ public class TwitchConnectionHandler : MonoBehaviour
         ConnectToTwitch();
     }
 
+
     void Update()
     {
         PingCounter += Time.unscaledDeltaTime;
@@ -87,22 +89,47 @@ public class TwitchConnectionHandler : MonoBehaviour
                 if (msg.StartsWith(Prefix))
                 {
                     //this is a command, do shit
-                    Debug.Log("Command!");
                     int indexof = msg.IndexOf(" ");
                     string cmd = indexof == -1 ? msg : msg.Substring(0, indexof);
                     int cutoff = cmd.Length + 1;
                     cmd = cmd.Substring(Prefix.Length);
-                    Debug.Log("cmd:" + cmd);
                     string param = "";
                     if (cutoff < msg.Length)
                     {
                         param = msg.Substring(cutoff);
                     }
-                    Debug.Log("parm:" + param);
                     TwitchCommand com;
                     if (TwitchManager.Commands.TryGetValue(cmd, out com))
                     {
-                        com.functocall(chatter,param);
+                        if (com.MinVotes == -1 || SettingsManager.Mode == TwitchMode.Chaos)
+                        {
+                            com.functocall(chatter, param);
+                        }
+                        else
+                        {
+                            System.Random rng = new System.Random();
+                            int votestowin = com.MinVotes;
+                            List<string[]> votes = TwitchManager.CommandVotes[com.command];
+                            string[] dup = votes.Find(x => x[0] == chatter);
+                            if (dup == null ? true : dup.Length == 0)
+                            {
+                                TwitchManager.CommandVotes[com.command].Add(new string[2] {
+                                chatter,
+                                param
+                            });
+                            }
+                            else
+                            {
+                                Debug.Log("Attempted duplicate vote: " + chatter);
+                            }
+
+                            if (votes.Count >= com.MinVotes)
+                            {
+                                string[] persontocall = votes[rng.Next(0, votes.Count - 1)];
+                                com.functocall(persontocall[0], persontocall[1]);
+                                TwitchManager.CommandVotes[com.command] = new List<string[]>();
+                            }
+                        }
                     }
 
 

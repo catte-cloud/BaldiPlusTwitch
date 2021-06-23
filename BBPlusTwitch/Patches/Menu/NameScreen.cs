@@ -51,7 +51,7 @@ namespace BBPlusTwitch
             GameObject newgam = new GameObject();
             newgam.name = "TwitchHandlerObject";
             newgam.AddComponent<TwitchConnectionHandler>();
-            TwitchManager.AddCommand("test",TestFunction);
+            TwitchManager.AddCommand("test",TestFunction,3);
             return true;
         }
 
@@ -71,6 +71,10 @@ namespace BBPlusTwitch
         {
             if (NameMenuManager.CurrentState == NameMenuState.ModeSelector)
             {
+                if (fileNo > 2)
+                {
+                    return false;
+                }
                 NameMenuManager.CurrentState = NameMenuState.SaveSelect;
                 SettingsManager.Mode = (TwitchMode)fileNo;
                 //THANK YOU STACK OVERFLOW YOU HAVE SAVED MY LIFE
