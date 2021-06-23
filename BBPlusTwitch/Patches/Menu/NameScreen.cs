@@ -42,6 +42,28 @@ namespace BBPlusTwitch
     }
 
     [HarmonyPatch(typeof(NameManager))]
+    [HarmonyPatch("Awake")]
+    class HijackNameAwake
+    {
+        static bool Prefix(NameManager __instance)
+        {
+            //UnityEngine.Debug.Log(BaldiTwitch.Oath.Value);
+            GameObject newgam = new GameObject();
+            newgam.name = "TwitchHandlerObject";
+            newgam.AddComponent<TwitchConnectionHandler>();
+            TwitchManager.AddCommand("test",TestFunction);
+            return true;
+        }
+
+        public static bool TestFunction(string person, string param)
+        {
+            UnityEngine.Debug.Log(person);
+            UnityEngine.Debug.Log(param);
+            return true;
+        }
+    }
+
+    [HarmonyPatch(typeof(NameManager))]
     [HarmonyPatch("NameClicked")]
     class ModifyNameClick
     {
