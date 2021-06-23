@@ -129,6 +129,13 @@ public class TwitchConnectionHandler : MonoBehaviour
                                 com.functocall(persontocall[0], persontocall[1]);
                                 TwitchManager.CommandVotes[com.command] = new List<string[]>();
                             }
+
+                            if (Singleton<BaseGameManager>.Instance)
+                            {
+                                Singleton<BaseGameManager>.Instance.CollectNotebooks(0); //this is really stupid
+                            }
+
+
                         }
                     }
 

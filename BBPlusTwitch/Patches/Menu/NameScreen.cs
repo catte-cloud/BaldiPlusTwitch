@@ -52,6 +52,10 @@ namespace BBPlusTwitch
             newgam.name = "TwitchHandlerObject";
             newgam.AddComponent<TwitchConnectionHandler>();
             IngameCommands.AddCommands();
+            foreach (RandomEvent rng in GeneralBaldiStuff.Events)
+            {
+                UnityEngine.Debug.Log(rng.name);
+            }
             //TwitchManager.AddCommand("test",TestFunction,3);
             return true;
         }
