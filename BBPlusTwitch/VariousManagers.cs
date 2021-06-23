@@ -3,6 +3,7 @@ using System.Diagnostics;
 using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Net;
+using System.Linq;
 //BepInEx stuff
 using BepInEx;
 using BepInEx.Logging;
@@ -33,6 +34,11 @@ namespace BBPlusTwitch
         public static TwitchMode Mode = TwitchMode.Vanilla;
     }
 
+
+    public static class GeneralBaldiStuff
+    {
+        public static readonly ItemObject[] Items = Resources.FindObjectsOfTypeAll<ItemObject>();
+    }
 
 
     public class TwitchCommand
