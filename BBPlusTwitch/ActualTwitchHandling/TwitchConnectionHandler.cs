@@ -91,9 +91,7 @@ public class TwitchConnectionHandler : MonoBehaviour
 
                 if (msg.StartsWith(Prefix))
                 {
-                    if (CommandCooldown > TwitchManager.CommandCooldown || !TwitchManager.CooldownEnabled)
-                    {
-                        CommandCooldown = 0f;
+                    //if (CommandCooldown > TwitchManager.CommandCooldown || !TwitchManager.CooldownEnabled)
                         //this is a command, do shit
                         int indexof = msg.IndexOf(" ");
                         string cmd = indexof == -1 ? msg : msg.Substring(0, indexof);
@@ -109,7 +107,11 @@ public class TwitchConnectionHandler : MonoBehaviour
                         {
                             if (com.MinVotes == -1 || SettingsManager.Mode == TwitchMode.Chaos)
                             {
-                                com.functocall(chatter, param);
+                                if ((CommandCooldown > TwitchManager.CommandCooldown) || !TwitchManager.CooldownEnabled)
+                                {
+                                    CommandCooldown = 0f;
+                                    com.functocall(chatter, param);
+                                }
                             }
                             else
                             {
@@ -133,6 +135,10 @@ public class TwitchConnectionHandler : MonoBehaviour
                                 {
                                     string[] persontocall = votes[rng.Next(0, votes.Count - 1)];
                                     com.functocall(persontocall[0], persontocall[1]);
+                                    if ((CommandCooldown > TwitchManager.CommandCooldown) || !TwitchManager.CooldownEnabled)
+                                    {
+                                        CommandCooldown = 0f;
+                                    }
                                     TwitchManager.CommandVotes[com.command] = new List<string[]>();
                                 }
 
@@ -145,7 +151,6 @@ public class TwitchConnectionHandler : MonoBehaviour
                             }
                         }
 
-                    }
                 }
             }
 
