@@ -62,7 +62,7 @@ namespace BBPlusTwitch
             {
                 Singleton<CoreGameManager>.Instance.GetCamera(0).cameraModifiers.Add(new CameraModifier(Vector3.zero, new Vector3(0, num, 0)));
             }
-            if (param[0] == "")
+            if (param[0] == "Z")
             {
                 Singleton<CoreGameManager>.Instance.GetCamera(0).cameraModifiers.Add(new CameraModifier(Vector3.zero, new Vector3(0, 0, num)));
             }
