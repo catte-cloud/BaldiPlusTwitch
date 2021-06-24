@@ -36,6 +36,7 @@ namespace BBPlusTwitch
             TwitchManager.AddCommand("sellall", SellAll, 50);
             TwitchManager.AddCommand("sendallnpcs", OhGodOhFuck, 55);
             TwitchManager.AddCommand("mute", MuteGame, 50);
+            TwitchManager.AddCommand("doevent", ActivateEvent, 50);
 
             //the following commands can only be executed in johnny's shop
 
@@ -208,6 +209,44 @@ namespace BBPlusTwitch
                 return false;
             }
             Singleton<BaseGameManager>.Instance.PleaseBaldi(5f);
+            return true;
+        }
+
+        public static bool ActivateEvent(string person, string name)
+        {
+            Type type = typeof(FogEvent);
+            if (!Singleton<BaseGameManager>.Instance)
+            {
+                return false;
+            }
+            switch (name)
+            {
+                case "Flood":
+                    type = typeof(FloodEvent);
+                    break;
+                case "Snap":
+                    type = typeof(RulerEvent);
+                    break;
+                case "Lockdown":
+                    type = typeof(LockdownEvent);
+                    break;
+                case "Party":
+                    type = typeof(PartyEvent);
+                    break;
+                case "Gravity":
+                    type = typeof(GravityEvent);
+                    break;
+            }
+            RandomEvent randevent = GameObject.Instantiate(GeneralBaldiStuff.RandomEvents.ToList().Find(x => x.GetType() == type));
+            foreach (RandomEvent rnd in GeneralBaldiStuff.RandomEvents)
+            {
+                UnityEngine.Debug.Log(rnd.name);
+            }
+            System.Random rng = Singleton<BaseGameManager>.Instance.lg.controlledRNG;
+            randevent.Initialize(Singleton<BaseGameManager>.Instance.CurrentEc, rng);
+            randevent.SetEventTime(rng);
+            randevent.AfterUpdateSetup();
+            randevent.Begin();
             return true;
         }
 

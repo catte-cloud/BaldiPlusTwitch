@@ -13,6 +13,7 @@ using HarmonyLib;
 //more stuff
 using System.Collections.Generic;
 using System.Collections;
+using StolenYetHelpfulCode;
 
 namespace BBPlusTwitch
 {
@@ -39,6 +40,7 @@ namespace BBPlusTwitch
     {
         public static readonly ItemObject[] Items = Resources.FindObjectsOfTypeAll<ItemObject>();
         public static readonly FieldTripObject[] FieldTrips = Resources.FindObjectsOfTypeAll<FieldTripObject>();
+        public static readonly RandomEvent[] RandomEvents = Resources.FindObjectsOfTypeAll<RandomEvent>().DistinctBy(x => x.GetType()).ToArray();
     }
 
 
