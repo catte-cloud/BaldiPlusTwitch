@@ -70,7 +70,7 @@ namespace BBPlusTwitch
 
         public static float CommandCooldown = 5f;
 
-        public static bool CooldownEnabled;
+        public static bool CooldownEnabled = false;
 
         public static bool AddCommand(string cmd, Func<string,string, bool> func, int min = -1)
         {
