@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>netstandard2.1</TargetFramework> 
+    <TargetFramework>netstandard2.0</TargetFramework> 
   </PropertyGroup>
 
   <ItemGroup>
@@ -16,6 +16,12 @@
     </Reference>
     <Reference Include="BepInEx.Harmony">
       <HintPath>..\Dependecies\BepInEx.Harmony.dll</HintPath>
+    </Reference>
+    <Reference Include="BepInEx.Preloader">
+      <HintPath>..\Dependecies\BepInEx.Preloader.dll</HintPath>
+    </Reference>
+    <Reference Include="HarmonyXInterop">
+      <HintPath>..\Dependecies\HarmonyXInterop.dll</HintPath>
     </Reference>
     <Reference Include="Rewired_Core">
       <HintPath>..\Dependecies\Rewired_Core.dll</HintPath>

@@ -15,9 +15,16 @@ namespace StolenYetHelpfulCode
             return method.Invoke(obj, args);
         }
 
-        public static IEnumerable<T> DistinctBy<T, TKey>(this IEnumerable<T> items, Func<T, TKey> property) //thank you satpal: https://stackoverflow.com/users/1668533/satpal
+        public static IEnumerable<TSource> DistinctBy<TSource, TKey>(this IEnumerable<TSource> source, Func<TSource, TKey> keySelector) //thanks to fasguy(fasfuck) for this code
         {
-            return items.GroupBy(property).Select(x => x.First());
+            HashSet<TKey> knownKeys = new HashSet<TKey>();
+            foreach (TSource element in source)
+            {
+                if (knownKeys.Add(keySelector(element)))
+                {
+                    yield return element;
+                }
+            }
         }
 
     }

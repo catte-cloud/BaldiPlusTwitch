@@ -1,11 +1,24 @@
 ﻿using System;
-using System.Collections.Generic;
-using UnityEngine;
+using System.Diagnostics;
+using System.Reflection;
+using System.Runtime.CompilerServices;
+using System.Net;
+using System.IO;
 using System.Text;
 using System.Linq;
-using System.Net.Sockets;
-using System.IO;
+//BepInEx stuff
+using BepInEx;
+using BepInEx.Logging;
+using UnityEngine;
+using UnityEngine.SceneManagement;
+using HarmonyLib;
+//more stuff
+using System.Collections.Generic;
+using System.Collections;
+using System.Runtime.Serialization.Formatters.Binary;
+using StolenYetHelpfulCode;
 using BBPlusTwitch;
+using System.Net.Sockets;
 
 public class TwitchConnectionHandler : MonoBehaviour
 {
@@ -29,7 +42,7 @@ public class TwitchConnectionHandler : MonoBehaviour
 
     public void ConnectToTwitch()
     {
-        Debug.Log("Connecting...");
+        UnityEngine.Debug.Log("Connecting...");
         Twitch = new TcpClient(URL, PORT);
         Reader = new StreamReader(Twitch.GetStream());
         Writer = new StreamWriter(Twitch.GetStream());
@@ -128,7 +141,7 @@ public class TwitchConnectionHandler : MonoBehaviour
                                 }
                                 else
                                 {
-                                    Debug.Log("Attempted duplicate vote: " + chatter);
+                                    UnityEngine.Debug.Log("Attempted duplicate vote: " + chatter);
                                 }
 
                                 if (votes.Count >= com.MinVotes)
@@ -154,7 +167,7 @@ public class TwitchConnectionHandler : MonoBehaviour
                 }
             }
 
-            Debug.Log(message);
+            UnityEngine.Debug.Log(message);
         }
     }
 }

@@ -4,6 +4,7 @@ using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Net;
 using System.IO;
+using System.Text;
 using System.Linq;
 //BepInEx stuff
 using BepInEx;
@@ -237,10 +238,12 @@ namespace BBPlusTwitch
                     type = typeof(GravityEvent);
                     break;
             }
+            UnityEngine.Debug.Log("Trying to find Type:" + type.Name);
             RandomEvent randevent = GameObject.Instantiate(GeneralBaldiStuff.RandomEvents.ToList().Find(x => x.GetType() == type));
+            UnityEngine.Debug.Log("Heres the list of all the shits we have:");
             foreach (RandomEvent rnd in GeneralBaldiStuff.RandomEvents)
             {
-                UnityEngine.Debug.Log(rnd.name);
+                UnityEngine.Debug.Log(rnd.name + "\nType:" + rnd.GetType().Name);
             }
             System.Random rng = Singleton<BaseGameManager>.Instance.lg.controlledRNG;
             randevent.Initialize(Singleton<BaseGameManager>.Instance.CurrentEc, rng);

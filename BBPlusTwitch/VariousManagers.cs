@@ -40,7 +40,10 @@ namespace BBPlusTwitch
     {
         public static readonly ItemObject[] Items = Resources.FindObjectsOfTypeAll<ItemObject>();
         public static readonly FieldTripObject[] FieldTrips = Resources.FindObjectsOfTypeAll<FieldTripObject>();
-        public static readonly RandomEvent[] RandomEvents = Resources.FindObjectsOfTypeAll<RandomEvent>().DistinctBy(x => x.GetType()).ToArray();
+        public static RandomEvent[] RandomEvents;
+
+        
+
     }
 
 
@@ -77,7 +80,15 @@ namespace BBPlusTwitch
         public static bool AddCommand(string cmd, Func<string,string, bool> func, int min = -1)
         {
             CommandVotes.Add(cmd,new List<string[]>());
-            return Commands.TryAdd(cmd,new TwitchCommand(cmd,"description missing",func,min));
+            try
+            {
+                Commands.Add(cmd, new TwitchCommand(cmd, "description missing", func, min));
+            }
+            catch
+            {
+                return false;
+            }
+            return true;
         }
     }
 
