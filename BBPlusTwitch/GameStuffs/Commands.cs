@@ -48,7 +48,7 @@ namespace BBPlusTwitch
 
         public static bool rotatecamera (string person, string number) //Singleton<CoreGameManager>.Instance.GetCamera(0)
         {
-            string[] param = number.Split(" ");
+            string[] param = number.Split(' ');
 
             if ((!int.TryParse(param[1], out int num)) || !Singleton<CoreGameManager>.Instance) //yes i did copy this, grow up
             {
