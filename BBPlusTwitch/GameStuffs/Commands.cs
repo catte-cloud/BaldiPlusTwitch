@@ -26,6 +26,7 @@ namespace BBPlusTwitch
         {
             TwitchManager.AddCommand("addytps", AddYTPs, 4);
             TwitchManager.AddCommand("removeytps", RemoveYTPs, 4);
+            TwitchManager.AddCommand("flicker", FlickerLights, 4);
             TwitchManager.AddCommand("giveitem", GiveItem, 5);
             TwitchManager.AddCommand("removeitem", RemoveItem, 8);
             TwitchManager.AddCommand("collectbook", CollectNotebook, 10);
@@ -37,7 +38,7 @@ namespace BBPlusTwitch
             TwitchManager.AddCommand("sellall", SellAll, 50);
             TwitchManager.AddCommand("sendallnpcs", OhGodOhFuck, 55);
             TwitchManager.AddCommand("mute", MuteGame, 50);
-            TwitchManager.AddCommand("ChangeFOV", ChangeFOV, 20);
+            TwitchManager.AddCommand("rotatecamera", rotatecamera, 20);
 
             //the following commands can only be executed in johnny's shop
 
@@ -45,16 +46,39 @@ namespace BBPlusTwitch
 
         }
 
-        public static bool ChangeFOV (string person, string number) //Singleton<CoreGameManager>.Instance.GetCamera(0)
+        public static bool rotatecamera (string person, string number) //Singleton<CoreGameManager>.Instance.GetCamera(0)
         {
-            
-            if ((!int.TryParse(number, out int num)) || !Singleton<CoreGameManager>.Instance) //yes i did copy this, grow up
+            string[] param = number.Split(" ");
+
+            if ((!int.TryParse(param[1], out int num)) || !Singleton<CoreGameManager>.Instance) //yes i did copy this, grow up
             {
                 return false;
             }
-            Singleton<CoreGameManager>.Instance.GetCamera(0).camCom.fieldOfView = num;
+            if (param[0] == "X")
+            {
+                Singleton<CoreGameManager>.Instance.GetCamera(0).cameraModifiers.Add(new CameraModifier(Vector3.zero, new Vector3(num, 0, 0)));
+            }
+            if (param[0] == "Y")
+            {
+                Singleton<CoreGameManager>.Instance.GetCamera(0).cameraModifiers.Add(new CameraModifier(Vector3.zero, new Vector3(0, num, 0)));
+            }
+            if (param[0] == "")
+            {
+                Singleton<CoreGameManager>.Instance.GetCamera(0).cameraModifiers.Add(new CameraModifier(Vector3.zero, new Vector3(0, 0, num)));
+            }
             return true;
 
+        }
+
+        public static bool FlickerLights(string person, string number)
+        {
+            if (!Singleton<BaseGameManager>.Instance)
+            {
+                return false;
+            }
+            MonoLogicManager.Instance.FlickerTime = -3;
+            MonoLogicManager.Instance.DeezNuts = true;
+            return true;
         }
 
         public static bool AddYTPs(string person, string number)
@@ -295,7 +319,7 @@ namespace BBPlusTwitch
                 return false;
             }
             item = GameObject.Instantiate(item);
-            item.item.gameObject.enabled = true;
+            item.item.gameObject.SetActive(true);
             item.item.Use(Singleton<CoreGameManager>.Instance.GetPlayer(0));
             return true;
         }

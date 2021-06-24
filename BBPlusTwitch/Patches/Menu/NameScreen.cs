@@ -101,7 +101,7 @@ namespace BBPlusTwitch
                         TwitchManager.CommandCooldown = 15f;
                     }
                     //THANK YOU STACK OVERFLOW YOU HAVE SAVED MY LIFE
-                    __instance.InvokeMethod<NameManager>("Load");
+                    __instance.InvokeMethod<NameManager>("Load");//stackied overflows : )
                     __instance.UpdateState();
                     return false;
                 }

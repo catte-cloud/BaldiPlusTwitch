@@ -24,6 +24,9 @@ namespace BBPlusTwitch
     {
         public float TimeUntilUnmute = 0f;
         public bool Muted = false;
+        public float FlickerTime;
+        public bool DeezNuts; //haha ben i'm SOOO funny :DDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDD
+
 
         public static MonoLogicManager Instance;
 
@@ -67,9 +70,21 @@ namespace BBPlusTwitch
             }
             if (TimeUntilUnmute > 5f && Muted)
             {
-                MonoLogicManager.Instance.TimeUntilUnmute = 0f;
+                TimeUntilUnmute = 0f;
                 Muted = false;
                 AudioListener.volume = 1f;
+            }
+
+            if (DeezNuts)
+            {
+                FlickerTime += Time.deltaTime;
+                Singleton<BaseGameManager>.Instance.CurrentEc.FlickerLights(true);
+            }
+            if (FlickerTime > 5f && DeezNuts)
+            {
+                FlickerTime = 0f;
+                DeezNuts = false;
+                Singleton<BaseGameManager>.Instance.CurrentEc.FlickerLights(false);
             }
         }
     }
