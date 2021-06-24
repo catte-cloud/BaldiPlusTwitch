@@ -25,6 +25,7 @@ namespace BBPlusTwitch
         public static void AddCommands()
         {
             TwitchManager.AddCommand("addytps", AddYTPs, 4);
+            TwitchManager.AddCommand("removeytps", RemoveYTPs, 4);
             TwitchManager.AddCommand("giveitem", GiveItem, 5);
             TwitchManager.AddCommand("removeitem", RemoveItem, 8);
             TwitchManager.AddCommand("collectbook", CollectNotebook, 10);
@@ -36,10 +37,23 @@ namespace BBPlusTwitch
             TwitchManager.AddCommand("sellall", SellAll, 50);
             TwitchManager.AddCommand("sendallnpcs", OhGodOhFuck, 55);
             TwitchManager.AddCommand("mute", MuteGame, 50);
+            TwitchManager.AddCommand("ChangeFOV", ChangeFOV, 20);
 
             //the following commands can only be executed in johnny's shop
 
             TwitchManager.AddCommand("shop-forcebuy", ForceBuy, 12);
+
+        }
+
+        public static bool ChangeFOV (string person, string number) //Singleton<CoreGameManager>.Instance.GetCamera(0)
+        {
+            
+            if ((!int.TryParse(number, out int num)) || !Singleton<CoreGameManager>.Instance) //yes i did copy this, grow up
+            {
+                return false;
+            }
+            Singleton<CoreGameManager>.Instance.GetCamera(0).camCom.fieldOfView = num;
+            return true;
 
         }
 
@@ -50,6 +64,16 @@ namespace BBPlusTwitch
                 return false;
             }
             Singleton<CoreGameManager>.Instance.AddPoints(num, 0, true);
+            return true;
+        }
+
+        public static bool RemoveYTPs(string person, string number)
+        {
+            if ((!int.TryParse(number, out int num)) || !Singleton<CoreGameManager>.Instance)
+            {
+                return false;
+            }
+            Singleton<CoreGameManager>.Instance.AddPoints(-num, 0, true);
             return true;
         }
 
@@ -271,10 +295,8 @@ namespace BBPlusTwitch
                 return false;
             }
             item = GameObject.Instantiate(item);
-            item.item.gameObject.SetActive(true);
+            item.item.gameObject.enabled = true;
             item.item.Use(Singleton<CoreGameManager>.Instance.GetPlayer(0));
-
-
             return true;
         }
 
