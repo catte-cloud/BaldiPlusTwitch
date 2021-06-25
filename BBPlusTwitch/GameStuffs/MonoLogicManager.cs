@@ -40,6 +40,7 @@ namespace BBPlusTwitch
             }
 
             GeneralBaldiStuff.RandomEvents = Resources.FindObjectsOfTypeAll<RandomEvent>().DistinctBy(x => x.GetType()).ToArray();
+
         }
 
 
