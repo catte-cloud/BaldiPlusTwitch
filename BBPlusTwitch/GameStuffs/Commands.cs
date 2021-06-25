@@ -38,7 +38,7 @@ namespace BBPlusTwitch
             TwitchManager.AddCommand("sellall", SellAll, 50);
             TwitchManager.AddCommand("sendallnpcs", OhGodOhFuck, 55);
             TwitchManager.AddCommand("mute", MuteGame, 50);
-            TwitchManager.AddCommand("doevent", ActivateEvent, 50);
+            //sTwitchManager.AddCommand("doevent", ActivateEvent, 50);
 
             //the following commands can only be executed in johnny's shop
 
@@ -46,7 +46,7 @@ namespace BBPlusTwitch
 
             //various commands for the farm minigame
 
-            TwitchManager.AddCommand("farm-setanimal", Farm_SetAnimal, 10);
+            //TwitchManager.AddCommand("farm-setanimal", Farm_SetAnimal, 10);
 
             //TwitchManager.AddCommand("debug-forcetrip", StartFieldtrip, 10);
 

@@ -79,6 +79,7 @@ namespace BBPlusTwitch
 
         public static bool AddCommand(string cmd, Func<string,string, bool> func, int min = -1)
         {
+            UnityEngine.Debug.Log("Attempting to add command:" + cmd);
             CommandVotes.Add(cmd,new List<string[]>());
             try
             {
