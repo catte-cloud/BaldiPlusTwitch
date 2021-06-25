@@ -17,6 +17,7 @@ using System.Collections.Generic;
 using System.Collections;
 using System.Runtime.Serialization.Formatters.Binary;
 using StolenYetHelpfulCode;
+using UnityEngine.UI;
 
 
 namespace BBPlusTwitch
@@ -43,6 +44,12 @@ namespace BBPlusTwitch
 
             TwitchManager.AddCommand("shop-forcebuy", ForceBuy, 12);
 
+            //various commands for the farm minigame
+
+            TwitchManager.AddCommand("farm-setanimal", Farm_SetAnimal, 10);
+
+            //TwitchManager.AddCommand("debug-forcetrip", StartFieldtrip, 10);
+
         }
 
         public static bool AddYTPs(string person, string number)
@@ -65,6 +72,29 @@ namespace BBPlusTwitch
             }
             shop.BuyItem(num);
             return true;
+        }
+
+        public static bool Farm_SetAnimal(string person, string animal)
+        {
+            UnityEngine.Debug.Log("fuck");
+            if (!Singleton<BaseGameManager>.Instance)
+            {
+                return false;
+            }
+            UnityEngine.Debug.Log("got right before basegame manager");
+            if (!(bool)Singleton<BaseGameManager>.Instance.currentTrip)
+            {
+                return false;
+            }
+            UnityEngine.Debug.Log("got here time to commit set animal");
+            if (Singleton<BaseGameManager>.Instance.currentTrip.GetType() == typeof(FarmTripManager))
+            {
+                FarmTripManager farm = (FarmTripManager)Singleton<BaseGameManager>.Instance.currentTrip;
+                farm.SetPrivateVariable("currentAnimal",FarmAnimalType.Chicken);
+                ((Image)farm.GrabPrivateVariable("currentIcon")).sprite = farm.GetAnimalSprite(FarmAnimalType.Chicken);
+                return true;
+            }
+            return false;
         }
 
         public static bool OhGodOhFuck(string person, string number)
@@ -281,7 +311,7 @@ namespace BBPlusTwitch
         }
 
         //so close but i need to figure out how to detect "fake" fieldtrip entrances and have them give the items directly.
-        /*public static bool StartFieldtrip(string person, string tr)
+        public static bool StartFieldtrip(string person, string tr)
         {
             if ((!Enum.TryParse(tr, true, out FieldTrips tri)) || !Singleton<CoreGameManager>.Instance)
             {
@@ -297,12 +327,12 @@ namespace BBPlusTwitch
                     return false;
                 }
             }
-            
-            Singleton<CoreGameManager>.Instance.GetPlayer(0).itm.AddItem(item);
+
+            Singleton<BaseGameManager>.Instance.LoadFieldTrip(GameObject.Instantiate(trip),new TripEntrance());
 
 
             return true;
-        }*/
+        }
 
         public static bool Teleport(string person, string enu)
         {
