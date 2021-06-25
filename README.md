@@ -2,9 +2,11 @@
 Twitch intergration for BB+, allow your audience to fuck with your game!!!!
 
 Insert more info here or something idk
+
+**ALSO PLEASE GIVE CREDIT BEFORE USING**
  
 # Build Instructions
-The main branch is the stable branch, however if you plan on modifying this I advise you fork the dev branch.
+The main branch is the dev branch, so I'd advise using the stable branch if you want to properly use this mod.
 
 In order to build you need Visual Studio 2019(obviously) and use github desktop or download the source directly.
 
