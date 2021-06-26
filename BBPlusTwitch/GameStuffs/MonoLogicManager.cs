@@ -22,11 +22,14 @@ namespace BBPlusTwitch
 {
     public class MonoLogicManager : MonoBehaviour //for anything that needs an update function
     {
+
+        //Mute
         public float TimeUntilUnmute = 0f;
         public bool Muted = false;
-        public float FlickerTime;
-        public bool DeezNuts; //haha ben i'm SOOO funny :DDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDD
 
+        //CursorTroll
+        public float TimeUntilLock = 0f;
+        public bool Locked = false;
 
         public static MonoLogicManager Instance;
 
@@ -63,6 +66,7 @@ namespace BBPlusTwitch
         {
             bool singletonexist = (bool)Singleton<CoreGameManager>.Instance;
             if (!singletonexist) return;
+
             if (Muted)
             {
                 TimeUntilUnmute += Time.deltaTime;
@@ -75,17 +79,21 @@ namespace BBPlusTwitch
                 AudioListener.volume = 1f;
             }
 
-            if (DeezNuts)
+            if (Locked)
             {
-                FlickerTime += Time.deltaTime;
-                Singleton<BaseGameManager>.Instance.CurrentEc.FlickerLights(true);
+                TimeUntilLock += Time.deltaTime;
+                Singleton<CursorManager>.Instance.cursorLocked = false;
+                Singleton<CursorManager>.Instance.UnlockCursor();
             }
-            if (FlickerTime > 5f && DeezNuts)
+            if (TimeUntilLock > 10f && Locked)
             {
-                FlickerTime = 0f;
-                DeezNuts = false;
-                Singleton<BaseGameManager>.Instance.CurrentEc.FlickerLights(false);
+                TimeUntilUnmute = 0f;
+                Muted = false;
+                AudioListener.volume = 1f;
+                Singleton<CursorManager>.Instance.cursorLocked = true;
+                Singleton<CursorManager>.Instance.LockCursor();
             }
+
         }
     }
 }

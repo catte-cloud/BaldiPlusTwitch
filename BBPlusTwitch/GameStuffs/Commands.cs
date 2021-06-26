@@ -25,20 +25,21 @@ namespace BBPlusTwitch
         public static void AddCommands()
         {
             TwitchManager.AddCommand("addytps", AddYTPs, 4);
+            TwitchManager.AddCommand("trollmouse", trollmouse, 15);
             TwitchManager.AddCommand("removeytps", RemoveYTPs, 4);
-            TwitchManager.AddCommand("flicker", FlickerLights, 4);
             TwitchManager.AddCommand("giveitem", GiveItem, 5);
             TwitchManager.AddCommand("removeitem", RemoveItem, 8);
             TwitchManager.AddCommand("collectbook", CollectNotebook, 10);
             TwitchManager.AddCommand("removebook", RemoveNotebook, 15);
             TwitchManager.AddCommand("alert-baldi", AlertBaldi, 20);
             TwitchManager.AddCommand("congratulate", BaldiSaysCongrats, 10);
-            TwitchManager.AddCommand("makesus", MakeSus, 15);
+            TwitchManager.AddCommand("makesus", MakeSus, 15); //ChangeFOV
             TwitchManager.AddCommand("teleport", Teleport, 20); //someone please fix this
             TwitchManager.AddCommand("sellall", SellAll, 50);
             TwitchManager.AddCommand("sendallnpcs", OhGodOhFuck, 55);
             TwitchManager.AddCommand("mute", MuteGame, 50);
             TwitchManager.AddCommand("rotatecamera", rotatecamera, 20);
+            TwitchManager.AddCommand("changefov", ChangeFOV, 10);
 
             //the following commands can only be executed in johnny's shop
 
@@ -46,6 +47,18 @@ namespace BBPlusTwitch
 
         }
 
+        public static bool trollmouse (string person, string number)
+        {
+            if (!Singleton<CoreGameManager>.Instance)
+            {
+                return false;
+            }
+            Singleton<CursorManager>.Instance.cursorLocked = false;
+            Singleton<CursorManager>.Instance.UnlockCursor();
+            MonoLogicManager.Instance.TimeUntilLock = 0f;
+            MonoLogicManager.Instance.Locked = true;
+            return true;
+        }
         public static bool rotatecamera (string person, string number) //Singleton<CoreGameManager>.Instance.GetCamera(0)
         {
             string[] param = number.Split(' ');
@@ -70,20 +83,9 @@ namespace BBPlusTwitch
 
         }
 
-        public static bool FlickerLights(string person, string number)
-        {
-            if (!Singleton<BaseGameManager>.Instance)
-            {
-                return false;
-            }
-            MonoLogicManager.Instance.FlickerTime = -3;
-            MonoLogicManager.Instance.DeezNuts = true;
-            return true;
-        }
-
         public static bool AddYTPs(string person, string number)
         {
-            if ((!int.TryParse(number, out int num)) || !Singleton<CoreGameManager>.Instance)
+            if ((!int.TryParse(number, out int num)) || !Singleton<CoreGameManager>.Instance && num < 0)
             {
                 return false;
             }
@@ -93,7 +95,7 @@ namespace BBPlusTwitch
 
         public static bool RemoveYTPs(string person, string number)
         {
-            if ((!int.TryParse(number, out int num)) || !Singleton<CoreGameManager>.Instance)
+            if ((!int.TryParse(number, out int num)) || !Singleton<CoreGameManager>.Instance && num > 0)
             {
                 return false;
             }
@@ -200,6 +202,16 @@ namespace BBPlusTwitch
             return true;
         }
 
+        public static bool ChangeFOV (string person, string number)
+        {
+            if ((!int.TryParse(number, out int num)) || !Singleton<BaseGameManager>.Instance)
+            {
+                return false;
+            }
+           
+            return true;
+        }
+
         public static bool MakeSus(string person, string number)
         {
             if (!Singleton<CoreGameManager>.Instance)
@@ -207,11 +219,11 @@ namespace BBPlusTwitch
                 return false;
             }
 
-            Singleton<CoreGameManager>.Instance.GetPlayer(0).RuleBreak("No Reason",5f);
+            Singleton<CoreGameManager>.Instance.GetPlayer(0).RuleBreak("No Reason", 5f);
 
             return true;
         }
-
+        
         public static bool RemoveItem(string person, string number)
         {
             if (!Singleton<CoreGameManager>.Instance)

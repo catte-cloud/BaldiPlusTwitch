@@ -13,6 +13,7 @@ using HarmonyLib;
 //more stuff
 using System.Collections.Generic;
 using System.Collections;
+using StolenYetHelpfulCode;
 
 namespace BBPlusTwitch
 {
@@ -39,6 +40,10 @@ namespace BBPlusTwitch
     {
         public static readonly ItemObject[] Items = Resources.FindObjectsOfTypeAll<ItemObject>();
         public static readonly FieldTripObject[] FieldTrips = Resources.FindObjectsOfTypeAll<FieldTripObject>();
+        public static RandomEvent[] RandomEvents;
+
+
+
     }
 
 
@@ -59,7 +64,7 @@ namespace BBPlusTwitch
     }
 
 
-   
+
 
     public static class TwitchManager
     {
@@ -72,10 +77,18 @@ namespace BBPlusTwitch
 
         public static bool CooldownEnabled = false;
 
-        public static bool AddCommand(string cmd, Func<string,string, bool> func, int min = -1)
+        public static bool AddCommand(string cmd, Func<string, string, bool> func, int min = -1)
         {
-            CommandVotes.Add(cmd,new List<string[]>());
-            return Commands.TryAdd(cmd,new TwitchCommand(cmd,"description missing",func,min));
+            CommandVotes.Add(cmd, new List<string[]>());
+            try
+            {
+                Commands.Add(cmd, new TwitchCommand(cmd, "description missing", func, min));
+            }
+            catch
+            {
+                return false;
+            }
+            return true;
         }
     }
 
