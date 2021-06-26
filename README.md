@@ -31,7 +31,7 @@ Put in your username in and the channel's chat you want to connect to.
 
 Use the OATH generator in the config file to generate an auth code and put it in the right place.
 
-Once that is done boot up the game again, select Chaos, Chaos(5s) or Chaos(15s) as Vanilla and Speedy don't work right now.
+Once that is done boot up the game again, select Chaos, Chaos(5s) or Chaos(15s).
 
 
 # doo doo feces
