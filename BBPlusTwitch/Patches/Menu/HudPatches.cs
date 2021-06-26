@@ -33,7 +33,7 @@ namespace BBPlusTwitch
                 builder.AppendLine();
                 foreach (KeyValuePair<string,List<string[]>> kvp in TwitchManager.CommandVotes)
                 {
-                    if (TwitchManager.Commands[kvp.Key].MinVotes != -1 && SettingsManager.Mode != TwitchMode.Chaos)
+                    if (TwitchManager.Commands[kvp.Key].MinVotes != -1 && (SettingsManager.Mode != TwitchMode.Chaos && SettingsManager.Mode != TwitchMode.Offline) && TwitchManager.Commands[kvp.Key].Enabled)
                     {
                         builder.AppendLine(kvp.Key + "(" + (kvp.Value.Count) + ")");
                     }

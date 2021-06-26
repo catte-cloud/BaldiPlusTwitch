@@ -14,6 +14,7 @@ using HarmonyLib;
 using System.Collections.Generic;
 using System.Collections;
 using StolenYetHelpfulCode;
+using BepInEx.Configuration;
 
 namespace BBPlusTwitch
 {
@@ -21,14 +22,16 @@ namespace BBPlusTwitch
     {
         ModeSelector,
         Options,
-        SaveSelect
+        SaveSelect,
+        Loading
     }
 
     public enum TwitchMode
     {
         Vanilla,
         Speedy,
-        Chaos
+        Chaos,
+        Offline
     }
     public static class SettingsManager
     {
@@ -53,13 +56,15 @@ namespace BBPlusTwitch
         public string description;
         public Func<string, string, bool> functocall;
         public int MinVotes;
+        public bool Enabled = true;
 
-        public TwitchCommand(string name, string desc, Func<string, string, bool> func, int max)
+        public TwitchCommand(string name, string desc, Func<string, string, bool> func, int max, bool enabled)
         {
             command = name;
             description = desc;
             functocall = func;
             MinVotes = max;
+            Enabled = enabled;
         }
     }
 
@@ -83,7 +88,13 @@ namespace BBPlusTwitch
             CommandVotes.Add(cmd,new List<string[]>());
             try
             {
-                Commands.Add(cmd, new TwitchCommand(cmd, "description missing", func, min));
+                Commands.Add(cmd, new TwitchCommand(cmd, "description missing", func, BaldiTwitch.Instance.Config.Bind(new ConfigDefinition(
+                "Command: " + cmd,
+                "Votes Needed"
+                ), min).Value, BaldiTwitch.Instance.Config.Bind(new ConfigDefinition(
+                "Command: " + cmd,
+                "Enabled"
+                ), true).Value)); //this is really fucking stupid
             }
             catch
             {

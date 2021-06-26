@@ -19,6 +19,7 @@ using StolenYetHelpfulCode;
 namespace BBPlusTwitch
 {
     //copied from BB+ multiplayer AGAIN i love re-using code
+    //note: this code is shit maybe i should completely rewrite the system for this from the ground up
     [HarmonyPatch(typeof(NameManager))]
     [HarmonyPatch("Load")]
     class HijackDefaultLoad
@@ -31,14 +32,25 @@ namespace BBPlusTwitch
                 ___nameList[0] = "Vanilla";
                 ___nameList[1] = "Speedy";
                 ___nameList[2] = "Chaos";
-                ___nameList[3] = "Chaos(5s)";
-                ___nameList[4] = "Chaos(15s)";
+                ___nameList[3] = "Offline(WIP)";
+                ___nameList[4] = "Chaos(5s)";
+                ___nameList[5] = "Chaos(15s)";
+                return false;
+            }
+            else if (NameMenuManager.CurrentState == NameMenuState.Loading)
+            {
+                ___nameList[0] = "Waiting for";
+                ___nameList[1] = "Connection...";
+                ___nameList[2] = "";
+                ___nameList[3] = "";
+                ___nameList[4] = "";
+                ___nameList[5] = "";
+                return false;
             }
             else
             {
                 UnityEngine.Debug.Log("not loading mode selector");
             }
-
             return NameMenuManager.CurrentState == NameMenuState.SaveSelect;
         }
     }
@@ -50,12 +62,6 @@ namespace BBPlusTwitch
         static bool Prefix(NameManager __instance)
         {
             //UnityEngine.Debug.Log(BaldiTwitch.Oath.Value);
-            GameObject newgam = new GameObject();
-            newgam.name = "TwitchHandlerObject";
-            newgam.AddComponent<TwitchConnectionHandler>();
-            GameObject newlod = new GameObject();
-            newlod.name = "MonoLogicObject";
-            newlod.AddComponent<MonoLogicManager>();
 
             IngameCommands.AddCommands();
             //TwitchManager.AddCommand("test",TestFunction,3);
@@ -68,7 +74,25 @@ namespace BBPlusTwitch
             UnityEngine.Debug.Log(param);
             return true;
         }
+
+        public static void CreateManagers()
+        {
+            GameObject newgam = new GameObject();
+            newgam.name = "TwitchHandlerObject";
+            newgam.AddComponent<TwitchConnectionHandler>();
+            GameObject newlod = new GameObject();
+            newlod.name = "MonoLogicObject";
+            newlod.AddComponent<MonoLogicManager>();
+        }
+
+        public static void ActivateNormalLoadingCode()
+        {
+            NameManager instance = GameObject.FindObjectOfType<NameManager>();
+            instance.InvokeMethod<NameManager>("Load");
+            instance.UpdateState();
+        }
     }
+
 
     [HarmonyPatch(typeof(NameManager))]
     [HarmonyPatch("NameClicked")]
@@ -78,25 +102,28 @@ namespace BBPlusTwitch
         {
             if (NameMenuManager.CurrentState == NameMenuState.ModeSelector)
             {
-                if (!(fileNo > 2))
+                if (!(fileNo > 3))
                 {
-                    NameMenuManager.CurrentState = NameMenuState.SaveSelect;
+                    //if (fileNo == 0 || fileNo == 1) return false;
+                    TwitchManager.CommandCooldown = 5f;
+                    NameMenuManager.CurrentState = NameMenuState.Loading;
                     SettingsManager.Mode = (TwitchMode)fileNo;
+                    HijackNameAwake.CreateManagers();
                     //THANK YOU STACK OVERFLOW YOU HAVE SAVED MY LIFE
                     __instance.InvokeMethod<NameManager>("Load");
-                    __instance.UpdateState();
                     return false;
                 }
                 else
                 {
-                    NameMenuManager.CurrentState = NameMenuState.SaveSelect;
+                    NameMenuManager.CurrentState = NameMenuState.Loading;
                     SettingsManager.Mode = TwitchMode.Chaos;
+                    HijackNameAwake.CreateManagers();
                     TwitchManager.CooldownEnabled = true;
-                    if (fileNo == 3)
+                    if (fileNo == 4)
                     {
                         TwitchManager.CommandCooldown = 5f;
                     }
-                    if (fileNo == 4)
+                    else if (fileNo == 5)
                     {
                         TwitchManager.CommandCooldown = 15f;
                     }
@@ -106,7 +133,8 @@ namespace BBPlusTwitch
                     return false;
                 }
             }
-            return NameMenuManager.CurrentState == NameMenuState.SaveSelect;
+
+            return (NameMenuManager.CurrentState == NameMenuState.SaveSelect && NameMenuManager.CurrentState != NameMenuState.Loading);
         }
 
     }

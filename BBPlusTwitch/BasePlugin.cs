@@ -25,8 +25,23 @@ namespace BBPlusTwitch
         public static ConfigEntry<string> UserName;
 
         public static ConfigEntry<string> Oath;
+
+        public static BaldiTwitch Instance;
+
         void Awake()
         {
+            if (Instance == null)
+            {
+                Instance = this;
+            }
+            else
+            {
+                if (Instance != this)
+                {
+                    Instance = this;
+                }
+
+            }
             Logger.LogDebug("hey wassup bb+ twitch mod here to say snas");
             Name = Config.Bind(new ConfigDefinition(
                 "Auth Info",
@@ -36,9 +51,9 @@ namespace BBPlusTwitch
 
             UserName = Config.Bind(new ConfigDefinition(
                 "Auth Info",
-                "Username"
+                "Channel"
 
-                ), "generic_username");
+                ), "channel_to_connect_to");
 
             Oath = Config.Bind(new ConfigDefinition(
                 "Auth Info",
