@@ -60,11 +60,11 @@ namespace BBPlusTwitch
                 return false;
             }
 
-            if (num < 200)
+            if (num > 200)
             {
                 num = 200;
             }
-            else if (num > -200)
+            else if (num < -200)
             {
                 num = -200;
             }
