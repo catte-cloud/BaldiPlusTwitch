@@ -106,8 +106,5 @@ namespace BBPlusTwitch
         }
     }
 
-    public static class NameMenuManager
-    {
-        public static NameMenuState CurrentState = NameMenuState.ModeSelector;
-    }
+
 }

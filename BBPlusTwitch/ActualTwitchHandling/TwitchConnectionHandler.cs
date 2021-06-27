@@ -118,8 +118,6 @@ public class TwitchConnectionHandler : MonoBehaviour
         if ((ConnectionStat != ConnectionStatus.NotAttempted) && (ConnectionStat != ConnectionStatus.Retry)) return;
         if (SettingsManager.Mode == TwitchMode.Offline)
         {
-            NameMenuManager.CurrentState = NameMenuState.SaveSelect;
-            HijackNameAwake.ActivateNormalLoadingCode();
             ConnectionStat = ConnectionStatus.Offline;
             UnityEngine.Debug.Log("Currently in Offline mode!");
             return;
@@ -288,9 +286,7 @@ public class TwitchConnectionHandler : MonoBehaviour
             }
             else if (message.Contains("JOIN") && ConnectionStat == ConnectionStatus.Connecting) //since this is an else if, this will only trigger if it does not contain PRIVMSG
             {
-                NameMenuManager.CurrentState = NameMenuState.SaveSelect;
                 UnityEngine.Debug.Log("Connection Successful!");
-                HijackNameAwake.ActivateNormalLoadingCode();
                 ConnectionStat = ConnectionStatus.Connected;
             }
         }

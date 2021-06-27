@@ -16,6 +16,10 @@ Once the source is downloaded:
 
 Create a folder called "Dependecies" where the solution is and copy all of the content from the BALDI_DATA/Managed folder to it, then copy all of the bepinex/core dll files from your bepinex 5.4 installation in there as well.
 
+also in there put this shit you need it: https://github.com/benjaminpants/BBPlusNameAPI
+
+(unlike this mod theres actually a release that you can just download)
+
 Bam you should be able to just compile it now, if not create an issue or something.
 
 
