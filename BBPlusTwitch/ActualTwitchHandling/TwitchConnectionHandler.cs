@@ -156,6 +156,15 @@ public class TwitchConnectionHandler : MonoBehaviour
     }
 
 
+
+    public void ShowText(string textoshow)
+    {
+        if ((bool)Singleton<CoreGameManager>.Instance)
+        {
+            Singleton<CoreGameManager>.Instance.GetHud(0).ShowEventText(textoshow,2f);
+        }
+    }
+
     public void HandleCommand(string msg, string chatter, bool ignorevotes)
     {
         if (msg.StartsWith(Prefix))
@@ -182,6 +191,7 @@ public class TwitchConnectionHandler : MonoBehaviour
                     {
                         CommandCooldown = 0f;
                         com.functocall(chatter, param);
+                        ShowText("<color=#FFFF00FF>" + chatter + "<color=\"white\">: " + msg);
                     }
                 }
                 else
@@ -206,6 +216,7 @@ public class TwitchConnectionHandler : MonoBehaviour
                     {
                         string[] persontocall = votes[rng.Next(0, votes.Count - 1)];
                         com.functocall(persontocall[0], persontocall[1]);
+                        ShowText("<color=#FFFF00FF>" + persontocall[0] + "<color=\"white\">: " + Prefix + com.command + " " + persontocall[1]);
                         if ((CommandCooldown > TwitchManager.CommandCooldown) || !TwitchManager.CooldownEnabled)
                         {
                             CommandCooldown = 0f;
@@ -215,7 +226,7 @@ public class TwitchConnectionHandler : MonoBehaviour
 
                     if (Singleton<BaseGameManager>.Instance)
                     {
-                        Singleton<BaseGameManager>.Instance.CollectNotebooks(0); //this is really stupid
+                        Singleton<BaseGameManager>.Instance.CollectNotebooks(0); //this is really FUCKING stupid
                     }
 
 

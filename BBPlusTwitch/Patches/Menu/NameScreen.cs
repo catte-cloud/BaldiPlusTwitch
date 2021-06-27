@@ -35,6 +35,8 @@ namespace BBPlusTwitch
                 ___nameList[3] = "Offline(WIP)";
                 ___nameList[4] = "Chaos(5s)";
                 ___nameList[5] = "Chaos(15s)";
+                ___nameList[6] = "";
+                ___nameList[7] = "Options";
                 return false;
             }
             else if (NameMenuManager.CurrentState == NameMenuState.Loading)
@@ -45,6 +47,20 @@ namespace BBPlusTwitch
                 ___nameList[3] = "";
                 ___nameList[4] = "";
                 ___nameList[5] = "";
+                ___nameList[6] = "";
+                ___nameList[7] = "";
+                return false;
+            }
+            else if (NameMenuManager.CurrentState == NameMenuState.Options)
+            {
+                ___nameList[0] = "Show CMDS: N";
+                ___nameList[1] = "Show Votes: Y";
+                ___nameList[2] = "";
+                ___nameList[3] = "";
+                ___nameList[4] = "";
+                ___nameList[5] = "";
+                ___nameList[6] = "";
+                ___nameList[7] = "Return";
                 return false;
             }
             else
@@ -94,6 +110,17 @@ namespace BBPlusTwitch
     }
 
 
+
+    [HarmonyPatch(typeof(NameManager))]
+    [HarmonyPatch("ToggelDeleteMode")]
+    class DisableDelete
+    {
+        static bool Prefix()
+        {
+            return (NameMenuManager.CurrentState == NameMenuState.SaveSelect);
+        }
+    }
+
     [HarmonyPatch(typeof(NameManager))]
     [HarmonyPatch("NameClicked")]
     class ModifyNameClick
@@ -104,17 +131,24 @@ namespace BBPlusTwitch
             {
                 if (!(fileNo > 3))
                 {
-                    //if (fileNo == 0 || fileNo == 1) return false;
                     TwitchManager.CommandCooldown = 5f;
                     NameMenuManager.CurrentState = NameMenuState.Loading;
                     SettingsManager.Mode = (TwitchMode)fileNo;
                     HijackNameAwake.CreateManagers();
                     //THANK YOU STACK OVERFLOW YOU HAVE SAVED MY LIFE
                     __instance.InvokeMethod<NameManager>("Load");
+                    __instance.UpdateState();
                     return false;
                 }
                 else
                 {
+                    if (fileNo == 7)
+                    {
+                        NameMenuManager.CurrentState = NameMenuState.Options;
+                        __instance.InvokeMethod<NameManager>("Load");
+                        __instance.UpdateState();
+                        return false;
+                    }
                     NameMenuManager.CurrentState = NameMenuState.Loading;
                     SettingsManager.Mode = TwitchMode.Chaos;
                     HijackNameAwake.CreateManagers();
@@ -127,14 +161,38 @@ namespace BBPlusTwitch
                     {
                         TwitchManager.CommandCooldown = 15f;
                     }
+                    else
+                    {
+                        return false;
+                    }
                     //THANK YOU STACK OVERFLOW YOU HAVE SAVED MY LIFE
                     __instance.InvokeMethod<NameManager>("Load");
                     __instance.UpdateState();
                     return false;
                 }
             }
+            else if (NameMenuManager.CurrentState == NameMenuState.Options)
+            {
+                if (fileNo == 0)
+                {
+                    SettingsManager.ShowCommands = !SettingsManager.ShowCommands;
+                    ___buttons[0].text.text = "Show CMDS: " + (SettingsManager.ShowCommands ? "Y" : "N");
+                }
+                else if (fileNo == 1)
+                {
+                    SettingsManager.ShowVotes = !SettingsManager.ShowVotes;
+                    ___buttons[1].text.text = "Show Votes: " + (SettingsManager.ShowVotes ? "Y" : "N");
+                }
+                else if (fileNo == 7)
+                {
+                    NameMenuManager.CurrentState = NameMenuState.ModeSelector;
+                    __instance.InvokeMethod<NameManager>("Load");
+                    __instance.UpdateState();
+                    return false;
+                }
+            }
 
-            return (NameMenuManager.CurrentState == NameMenuState.SaveSelect && NameMenuManager.CurrentState != NameMenuState.Loading);
+            return (NameMenuManager.CurrentState == NameMenuState.SaveSelect);
         }
 
     }

@@ -36,6 +36,8 @@ namespace BBPlusTwitch
     public static class SettingsManager
     {
         public static TwitchMode Mode = TwitchMode.Vanilla;
+        public static bool ShowCommands = false;
+        public static bool ShowVotes = true;
     }
 
 
@@ -94,7 +96,7 @@ namespace BBPlusTwitch
                 ), min).Value, BaldiTwitch.Instance.Config.Bind(new ConfigDefinition(
                 "Command: " + cmd,
                 "Enabled"
-                ), true).Value)); //this is really fucking stupid
+                ), true).Value)); //this is really fucking stupid, remind me to create a custom method of storing this shit
             }
             catch
             {

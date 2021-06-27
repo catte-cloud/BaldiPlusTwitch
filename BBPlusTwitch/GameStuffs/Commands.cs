@@ -39,6 +39,7 @@ namespace BBPlusTwitch
             TwitchManager.AddCommand("sendallnpcs", OhGodOhFuck, 55);
             TwitchManager.AddCommand("mute", MuteGame, 50);
             TwitchManager.AddCommand("doevent", ActivateEvent, 50);
+            TwitchManager.AddCommand("speedboost", Whiplash, 25);
 
             //the following commands can only be executed in johnny's shop
 
@@ -58,6 +59,16 @@ namespace BBPlusTwitch
             {
                 return false;
             }
+
+            if (num < 200)
+            {
+                num = 200;
+            }
+            else if (num > -200)
+            {
+                num = -200;
+            }
+
             Singleton<CoreGameManager>.Instance.AddPoints(num, 0, true);
             return true;
         }
@@ -74,7 +85,20 @@ namespace BBPlusTwitch
             return true;
         }
 
-        public static bool Farm_SetAnimal(string person, string animal)
+        public static bool Whiplash(string person, string number)
+        {
+
+            if (!Singleton<CoreGameManager>.Instance)
+            {
+                return false;
+            }
+            MonoLogicManager.Instance.PlayerToFuckUp = Singleton<CoreGameManager>.Instance.GetPlayer(0);
+            MonoLogicManager.Instance.TimescaleTimer = 0f;
+            MonoLogicManager.Instance.TimescaleFucked = true;
+            return true;
+        }
+
+        public static bool Farm_SetAnimal(string person, string animal) //theres some weird conversion error here and I don't know where it is.
         {
             if ((!Enum.TryParse(animal, true, out FarmAnimalType ani)) || !Singleton<CoreGameManager>.Instance)
             {

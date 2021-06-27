@@ -29,6 +29,7 @@ namespace BBPlusTwitch
         {
             if (textVal == 0)
             {
+                if (!SettingsManager.ShowVotes) return true;
                 StringBuilder builder = new StringBuilder();
                 builder.AppendLine();
                 foreach (KeyValuePair<string,List<string[]>> kvp in TwitchManager.CommandVotes)
