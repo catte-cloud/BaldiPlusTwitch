@@ -159,6 +159,7 @@ public class TwitchConnectionHandler : MonoBehaviour
 
     public void ShowText(string textoshow)
     {
+        if (!SettingsManager.ShowCommands) return;
         if ((bool)Singleton<CoreGameManager>.Instance)
         {
             Singleton<CoreGameManager>.Instance.GetHud(0).ShowEventText(textoshow,2f);
