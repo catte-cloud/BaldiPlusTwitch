@@ -31,8 +31,11 @@ Put in your username in and the channel's chat you want to connect to.
 
 Use the OATH generator in the config file to generate an auth code and put it in the right place.
 
+You can also turn on and off commands here.
+
 Once that is done boot up the game again, select Chaos, Chaos(5s) or Chaos(15s).
 
+Offline mode is incomplete and should not be used for now.
 
 # doo doo feces
 
