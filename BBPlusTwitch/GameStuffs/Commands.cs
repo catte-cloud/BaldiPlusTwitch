@@ -204,11 +204,12 @@ namespace BBPlusTwitch
 
         public static bool ChangeFOV (string person, string number)
         {
-            if ((!int.TryParse(number, out int num)) || !Singleton<BaseGameManager>.Instance)
+            if ((!int.TryParse(number, out int num)))
             {
                 return false;
             }
-           
+
+            Camera.main.fieldOfView = num;
             return true;
         }
 
