@@ -34,12 +34,16 @@ namespace BBPlusTwitch
             TwitchManager.AddCommand("alert-baldi", AlertBaldi, 20);
             TwitchManager.AddCommand("congratulate", BaldiSaysCongrats, 10);
             TwitchManager.AddCommand("makesus", MakeSus, 15);
-            TwitchManager.AddCommand("teleport", Teleport, 20); //someone please fix this
+            //TwitchManager.AddCommand("teleport", Teleport, 20); //someone please fix this
             TwitchManager.AddCommand("sellall", SellAll, 50);
             TwitchManager.AddCommand("sendallnpcs", OhGodOhFuck, 55);
             TwitchManager.AddCommand("mute", MuteGame, 50);
             TwitchManager.AddCommand("doevent", ActivateEvent, 50);
             TwitchManager.AddCommand("speedboost", Whiplash, 25);
+
+
+
+            
 
             //the following commands can only be executed in johnny's shop
 
@@ -50,6 +54,22 @@ namespace BBPlusTwitch
             //TwitchManager.AddCommand("farm-setanimal", Farm_SetAnimal, 10);
 
             //TwitchManager.AddCommand("debug-forcetrip", StartFieldtrip, 10);
+
+            //adds the weighted command thingies
+
+            TwitchManager.AddWeightedCommand("addytps", 30, "-200", "-150", "-100", "-69", "-50", "50", "69", "100", "150", "200", "1", "-1");
+            TwitchManager.AddWeightedCommand("giveitem", 20, Enum.GetNames(typeof(Items)));
+            TwitchManager.AddWeightedCommand("removeitem",19);
+            TwitchManager.AddWeightedCommand("collectbook", 15);
+            TwitchManager.AddWeightedCommand("removebook", 12);
+            TwitchManager.AddWeightedCommand("alert-baldi", 12);
+            TwitchManager.AddWeightedCommand("congratulate", 13);
+            TwitchManager.AddWeightedCommand("makesus", 13);
+            TwitchManager.AddWeightedCommand("sellall", 2);
+            TwitchManager.AddWeightedCommand("sendallnpcs", 3);
+            TwitchManager.AddWeightedCommand("mute", 5);
+            TwitchManager.AddWeightedCommand("doevent", 1, "Flood", "Snap", "Lockdown", "Party", "Gravity", "Fog");
+            TwitchManager.AddWeightedCommand("speedboost", 8);
 
         }
 

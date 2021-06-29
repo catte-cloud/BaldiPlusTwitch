@@ -38,6 +38,7 @@ namespace BBPlusTwitch
         public static TwitchMode Mode = TwitchMode.Vanilla;
         public static bool ShowCommands = false;
         public static bool ShowVotes = true;
+        public static bool OfflineUseWeighted = true;
     }
 
 
@@ -47,7 +48,29 @@ namespace BBPlusTwitch
         public static readonly FieldTripObject[] FieldTrips = Resources.FindObjectsOfTypeAll<FieldTripObject>();
         public static RandomEvent[] RandomEvents;
 
-        
+
+    }
+
+    public class OfflineCommand
+    {
+        public string command;
+        public string[] valid_params;
+
+        public OfflineCommand(string cmd, params string[] parms)
+        {
+            command = cmd;
+            valid_params = parms;
+        }
+
+    }
+
+    public class WeightedOfflineCommand : WeightedSelection<OfflineCommand> //um????
+    {
+        public WeightedOfflineCommand(string cmd, int w, params string[] parms)
+        {
+            weight = w;
+            selection = new OfflineCommand(cmd, parms);
+        }
 
     }
 
@@ -80,9 +103,16 @@ namespace BBPlusTwitch
 
         public static Dictionary<string, List<string[]>> CommandVotes = new Dictionary<string, List<string[]>>();
 
+        public static List<WeightedOfflineCommand> WeightedCommands = new List<WeightedOfflineCommand>();
+
         public static float CommandCooldown = 5f;
 
         public static bool CooldownEnabled = false;
+
+        public static void AddWeightedCommand(string name,int weight, params string[] parms)
+        {
+            WeightedCommands.Add(new WeightedOfflineCommand(name,weight,parms));
+        }
 
         public static bool AddCommand(string cmd, Func<string,string, bool> func, int min = -1)
         {

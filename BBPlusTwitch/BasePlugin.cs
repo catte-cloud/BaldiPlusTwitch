@@ -95,6 +95,12 @@ namespace BBPlusTwitch
             return SettingsManager.ShowCommands;
         }
 
+        public static object ToggleWeights()
+        {
+            SettingsManager.OfflineUseWeighted = !SettingsManager.OfflineUseWeighted;
+            return SettingsManager.OfflineUseWeighted;
+        }
+
         public static object ToggleVotes()
         {
             SettingsManager.ShowVotes = !SettingsManager.ShowVotes;
@@ -153,7 +159,8 @@ namespace BBPlusTwitch
             Objects = new List<Name_MenuObject>();
             NameMenuManager.AddPage("mtm101twitchoptions","options");
             Objects.Add(new Name_MenuOption("showcmds", "Show CMDS", SettingsManager.ShowCommands, ToggleCMDS));
-            Objects.Add(new Name_MenuOption("showcmds", "Show Votes", SettingsManager.ShowVotes, ToggleVotes));
+            Objects.Add(new Name_MenuOption("showvotes", "Show Votes", SettingsManager.ShowVotes, ToggleVotes));
+            Objects.Add(new Name_MenuOption("togglefairoffline", "Balanced Offline", SettingsManager.OfflineUseWeighted, ToggleWeights));
             NameMenuManager.AddToPageBulk("mtm101twitchoptions",Objects);
             NameMenuManager.AddToPage("options",new Name_MenuFolder("totwitchoptions","BB+ Twitch","mtm101twitchoptions"));
 

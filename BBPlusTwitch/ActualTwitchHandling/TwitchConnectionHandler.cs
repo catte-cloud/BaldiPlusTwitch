@@ -105,6 +105,8 @@ public class TwitchConnectionHandler : MonoBehaviour
         ""
     };
 
+    public System.Random RNG;
+
 
     public string GenerateUsername()
     {
@@ -151,6 +153,24 @@ public class TwitchConnectionHandler : MonoBehaviour
         }
         DontDestroyOnLoad(this);
         ConnectToTwitch();
+        RNG = new System.Random();
+    }
+
+
+    public string ReturnRandomCommand()
+    {
+        OfflineCommand cmd;
+        if (SettingsManager.OfflineUseWeighted)
+        {
+            WeightedSelection<OfflineCommand>[] offlinecmds = TwitchManager.WeightedCommands.ToArray();
+            cmd = WeightedSelection<OfflineCommand>.ControlledRandomSelection(offlinecmds, RNG);
+        }
+        else
+        {
+            cmd = TwitchManager.WeightedCommands[RNG.Next(0, TwitchManager.WeightedCommands.Count - 1)].selection;
+        }
+        int param = RNG.Next(0, cmd.valid_params.Length - 1 == -1 ? 0 : cmd.valid_params.Length - 1);
+        return Prefix + cmd.command + " " + (cmd.valid_params.Length == 0 ? "" : cmd.valid_params[param]);
     }
 
 
@@ -189,8 +209,11 @@ public class TwitchConnectionHandler : MonoBehaviour
                     if ((CommandCooldown > TwitchManager.CommandCooldown) || !TwitchManager.CooldownEnabled)
                     {
                         CommandCooldown = 0f;
-                        com.functocall(chatter, param);
-                        ShowText("<color=#FFFF00FF>" + chatter + "<color=\"white\">: " + msg);
+                        if (com.functocall(chatter, param))
+                        {
+                            ShowText("<color=#FFFF00FF>" + chatter + "<color=\"white\">: " + msg);
+                        }
+                        
                     }
                 }
                 else
@@ -214,8 +237,11 @@ public class TwitchConnectionHandler : MonoBehaviour
                     if (votes.Count >= com.MinVotes)
                     {
                         string[] persontocall = votes[rng.Next(0, votes.Count - 1)];
-                        com.functocall(persontocall[0], persontocall[1]);
-                        ShowText("<color=#FFFF00FF>" + persontocall[0] + "<color=\"white\">: " + Prefix + com.command + " " + persontocall[1]);
+                        if (com.functocall(persontocall[0], persontocall[1]))
+                        {
+                            ShowText("<color=#FFFF00FF>" + persontocall[0] + "<color=\"white\">: " + Prefix + com.command + " " + persontocall[1]);
+                        }
+                        
                         if ((CommandCooldown > TwitchManager.CommandCooldown) || !TwitchManager.CooldownEnabled)
                         {
                             CommandCooldown = 0f;
@@ -242,7 +268,8 @@ public class TwitchConnectionHandler : MonoBehaviour
 
         if ((CommandCooldown > TwitchManager.CommandCooldown) && SettingsManager.Mode == TwitchMode.Offline)
         {
-            HandleCommand("!giveitem Apple", GenerateUsername(), true);
+            CommandCooldown = 0f;
+            HandleCommand(ReturnRandomCommand(), GenerateUsername(), true);
         }
 
         if (SettingsManager.Mode == TwitchMode.Offline) return;
