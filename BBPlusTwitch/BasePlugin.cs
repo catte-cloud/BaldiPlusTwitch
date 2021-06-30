@@ -55,36 +55,36 @@ namespace BBPlusTwitch
             NameMenuManager.AllowContinue(true);
         }
 
-        public static void SetVanilla()
+        public static void SetVanilla(Name_MenuObject obj)
         {
             SetFunnyMode(TwitchMode.Vanilla, 0f);
         }
 
-        public static void SetSpeedy()
+        public static void SetSpeedy(Name_MenuObject obj)
         {
             SetFunnyMode(TwitchMode.Speedy, 0f);
         }
 
-        public static void SetChaos()
+        public static void SetChaos(Name_MenuObject obj)
         {
             SetFunnyMode(TwitchMode.Chaos, 0f);
         }
 
-        public static void SetChaos5s()
+        public static void SetChaos5s(Name_MenuObject obj)
         {
             SetFunnyMode(TwitchMode.Chaos, 5f);
         }
 
-        public static void SetChaos10s()
+        public static void SetChaos10s(Name_MenuObject obj)
         {
             SetFunnyMode(TwitchMode.Chaos, 10f);
         }
-        public static void SetChaos15s()
+        public static void SetChaos15s(Name_MenuObject obj)
         {
             SetFunnyMode(TwitchMode.Chaos, 15f);
         }
 
-        public static void SetOffline()
+        public static void SetOffline(Name_MenuObject obj)
         {
             SetFunnyMode(TwitchMode.Offline, 5f);
         }
