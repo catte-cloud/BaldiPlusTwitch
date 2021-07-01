@@ -102,7 +102,7 @@ namespace BBPlusTwitch
             {
                 return false;
             }
-            Singleton<BaseGameManager>.Instance.Ec.GetBaldi().GetExtraAnger(0.4f);
+            Singleton<BaseGameManager>.Instance.Ec.GetBaldi().GetExtraAnger(1f);
             return true;
         }
 
