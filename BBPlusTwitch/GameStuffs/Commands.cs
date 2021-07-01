@@ -40,10 +40,11 @@ namespace BBPlusTwitch
             TwitchManager.AddCommand("mute", MuteGame, 50);
             TwitchManager.AddCommand("doevent", ActivateEvent, 50);
             TwitchManager.AddCommand("speedboost", Whiplash, 25);
+            TwitchManager.AddCommand("maketempangry", AngerBaldi, 20);
 
 
 
-            
+
 
             //the following commands can only be executed in johnny's shop
 
@@ -70,6 +71,7 @@ namespace BBPlusTwitch
             TwitchManager.AddWeightedCommand("mute", 5);
             TwitchManager.AddWeightedCommand("doevent", 1, "Flood", "Snap", "Lockdown", "Party", "Gravity", "Fog");
             TwitchManager.AddWeightedCommand("speedboost", 8);
+            TwitchManager.AddWeightedCommand("maketempangry", 8);
 
         }
 
@@ -93,6 +95,16 @@ namespace BBPlusTwitch
             return true;
         }
 
+
+        public static bool AngerBaldi(string person, string param)
+        {
+            if (!Singleton<BaseGameManager>.Instance)
+            {
+                return false;
+            }
+            Singleton<BaseGameManager>.Instance.Ec.GetBaldi().GetExtraAnger(0.4f);
+            return true;
+        }
 
         public static bool ForceBuy(string person, string number)
         {
