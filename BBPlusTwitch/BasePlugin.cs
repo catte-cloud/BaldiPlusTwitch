@@ -165,7 +165,6 @@ namespace BBPlusTwitch
             NameMenuManager.AddToPage("options",new Name_MenuFolder("totwitchoptions","BB+ Twitch","mtm101twitchoptions"));
 
 
-
             harmony.PatchAll();
 
         }

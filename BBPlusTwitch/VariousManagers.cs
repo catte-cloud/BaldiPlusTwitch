@@ -15,6 +15,7 @@ using System.Collections.Generic;
 using System.Collections;
 using StolenYetHelpfulCode;
 using BepInEx.Configuration;
+using System.IO;
 
 namespace BBPlusTwitch
 {
@@ -36,9 +37,115 @@ namespace BBPlusTwitch
     public static class SettingsManager
     {
         public static TwitchMode Mode = TwitchMode.Vanilla;
-        public static bool ShowCommands = false;
-        public static bool ShowVotes = true;
-        public static bool OfflineUseWeighted = true;
+        public static bool ShowCommands
+        {
+            get
+            {
+                Load();
+                return ShowCommandsPriv;
+            }
+
+            set
+            {
+                ShowCommandsPriv = value;
+                Save();
+            }
+
+
+        }
+
+        public static bool ShowVotes
+        {
+            get
+            {
+                Load();
+                return ShowVotesPriv;
+            }
+
+            set
+            {
+                ShowVotesPriv = value;
+                Save();
+            }
+
+
+        }
+
+        public static bool OfflineUseWeighted
+        {
+            get
+            {
+                Load();
+                return OfflineUseWeightedPriv;
+            }
+
+            set
+            {
+                OfflineUseWeightedPriv = value;
+                Save();
+            }
+
+
+        }
+
+        public static bool ShowCommandsPriv = false;
+        public static bool ShowVotesPriv = true;
+        public static bool OfflineUseWeightedPriv = true;
+        private static bool HasAlreadyLoaded = false;
+
+        private static void Load()
+        {
+            if (HasAlreadyLoaded)
+            {
+                return;
+            }
+            HasAlreadyLoaded = true;
+            string pathtoload = Path.Combine(Application.persistentDataPath, "Mods", "BBTwitch","data.dat");
+            if (File.Exists(pathtoload))
+            {
+                FileStream stream = File.OpenRead(pathtoload);
+                BinaryReader reader = new BinaryReader(stream);
+                try
+                {
+                    ShowCommandsPriv = reader.ReadBoolean();
+                    ShowVotesPriv = reader.ReadBoolean();
+                    OfflineUseWeightedPriv = reader.ReadBoolean();
+                }
+                catch(Exception E)
+                {
+                    UnityEngine.Debug.LogError(E.Message);
+                }
+                reader.Close();
+            }
+            else
+            {
+                Save();
+            }
+        }
+
+        private static void Save()
+        {
+            string pathtosave = Path.Combine(Application.persistentDataPath,"Mods","BBTwitch");
+            if (!Directory.Exists(pathtosave))
+            {
+                Directory.CreateDirectory(pathtosave);
+            }
+            DirectoryInfo fo = new DirectoryInfo(pathtosave);
+            FileInfo[] filefo = fo.GetFiles("data.dat");
+            if (filefo.Length != 0)
+            {
+                filefo[0].Delete();
+            }
+            FileStream stream = File.Create(Path.Combine(pathtosave, "data.dat"));
+            BinaryWriter writer = new BinaryWriter(stream);
+
+            writer.Write(ShowCommandsPriv);
+            writer.Write(ShowVotesPriv);
+            writer.Write(OfflineUseWeightedPriv);
+
+            writer.Close();
+        }
+
     }
 
 
