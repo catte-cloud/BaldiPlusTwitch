@@ -16,7 +16,7 @@ using System.Collections.Generic;
 
 namespace BBPlusTwitch
 {
-    [BepInPlugin("mtm101.rulerp.bbplus.balditwitch", "BB+ Twitch Intergration", "0.0.30.0")]
+    [BepInPlugin("mtm101.rulerp.bbplus.balditwitch", "BB+ Twitch Intergration", "1.0.0.0")]
 
 
 
