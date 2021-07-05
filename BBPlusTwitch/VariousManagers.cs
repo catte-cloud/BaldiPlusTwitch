@@ -92,6 +92,7 @@ namespace BBPlusTwitch
         public static bool ShowVotesPriv = true;
         public static bool OfflineUseWeightedPriv = true;
         private static bool HasAlreadyLoaded = false;
+        const byte SaveVersionNumber = 2;
 
         private static void Load()
         {
@@ -107,6 +108,13 @@ namespace BBPlusTwitch
                 BinaryReader reader = new BinaryReader(stream);
                 try
                 {
+                    if (reader.ReadByte() != SaveVersionNumber)
+                    {
+                        reader.Close();
+                        File.Delete(pathtoload);
+                        Save();
+                        return;
+                    }
                     ShowCommandsPriv = reader.ReadBoolean();
                     ShowVotesPriv = reader.ReadBoolean();
                     OfflineUseWeightedPriv = reader.ReadBoolean();
@@ -139,6 +147,7 @@ namespace BBPlusTwitch
             FileStream stream = File.Create(Path.Combine(pathtosave, "data.dat"));
             BinaryWriter writer = new BinaryWriter(stream);
 
+            writer.Write(SaveVersionNumber);
             writer.Write(ShowCommandsPriv);
             writer.Write(ShowVotesPriv);
             writer.Write(OfflineUseWeightedPriv);
