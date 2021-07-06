@@ -67,7 +67,7 @@ namespace BBPlusTwitch
             TwitchManager.AddWeightedCommand("alert-baldi", 12);
             TwitchManager.AddWeightedCommand("congratulate", 13);
             TwitchManager.AddWeightedCommand("makesus", 13);
-            TwitchManager.AddWeightedCommand("makecharsus", 11);
+            TwitchManager.AddWeightedCommand("makecharsus", 11, Enum.GetNames(typeof(Character))); //good enough
             TwitchManager.AddWeightedCommand("sellall", 2);
             TwitchManager.AddWeightedCommand("sendallnpcs", 3);
             TwitchManager.AddWeightedCommand("mute", 5);
