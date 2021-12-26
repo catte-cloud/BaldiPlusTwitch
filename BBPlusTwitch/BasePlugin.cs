@@ -10,7 +10,7 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using HarmonyLib; //god im hoping i got the right version of harmony
 using BepInEx.Configuration;
-using BBPlusNameAPI;
+using MTM101BaldAPI.NameMenu;
 using System.Collections.Generic;
 //this code is reused from BaldiMP, lol
 
@@ -55,36 +55,36 @@ namespace BBPlusTwitch
             NameMenuManager.AllowContinue(true);
         }
 
-        public static void SetVanilla(Name_MenuObject obj)
+        public static void SetVanilla(MenuObject obj)
         {
             SetFunnyMode(TwitchMode.Vanilla, 0f);
         }
 
-        public static void SetSpeedy(Name_MenuObject obj)
+        public static void SetSpeedy(MenuObject obj)
         {
             SetFunnyMode(TwitchMode.Speedy, 0f);
         }
 
-        public static void SetChaos(Name_MenuObject obj)
+        public static void SetChaos(MenuObject obj)
         {
             SetFunnyMode(TwitchMode.Chaos, 0f);
         }
 
-        public static void SetChaos5s(Name_MenuObject obj)
+        public static void SetChaos5s(MenuObject obj)
         {
             SetFunnyMode(TwitchMode.Chaos, 5f);
         }
 
-        public static void SetChaos10s(Name_MenuObject obj)
+        public static void SetChaos10s(MenuObject obj)
         {
             SetFunnyMode(TwitchMode.Chaos, 10f);
         }
-        public static void SetChaos15s(Name_MenuObject obj)
+        public static void SetChaos15s(MenuObject obj)
         {
             SetFunnyMode(TwitchMode.Chaos, 15f);
         }
 
-        public static void SetOffline(Name_MenuObject obj)
+        public static void SetOffline(MenuObject obj)
         {
             SetFunnyMode(TwitchMode.Offline, 5f);
         }
@@ -145,24 +145,24 @@ namespace BBPlusTwitch
             Harmony harmony = new Harmony("mtm101.rulerp.bbplus.balditwitch");
 
             NameMenuManager.AddPreStartPage("mandatorytwitchshits",true);
-            List<Name_MenuObject> Objects = new List<Name_MenuObject>();
-            Objects.Add(new Name_MenuGeneric("startvanilla", "Vanilla", SetVanilla));
-            Objects.Add(new Name_MenuGeneric("startspeedy", "Speedy", SetSpeedy));
-            Objects.Add(new Name_MenuGeneric("startchaos", "Chaos", SetChaos));
-            Objects.Add(new Name_MenuGeneric("startchaos5s", "Chaos(5s)", SetChaos5s));
-            Objects.Add(new Name_MenuGeneric("startchaos10s", "Chaos(10s)", SetChaos10s));
-            Objects.Add(new Name_MenuGeneric("startchaos15s", "Chaos(15s)", SetChaos15s));
-            Objects.Add(new Name_MenuGeneric("startoffline", "Offline", SetOffline));
+            List<MenuObject> Objects = new List<MenuObject>();
+            Objects.Add(new MenuGeneric("startvanilla", "Vanilla", SetVanilla));
+            Objects.Add(new MenuGeneric("startspeedy", "Speedy", SetSpeedy));
+            Objects.Add(new MenuGeneric("startchaos", "Chaos", SetChaos));
+            Objects.Add(new MenuGeneric("startchaos5s", "Chaos(5s)", SetChaos5s));
+            Objects.Add(new MenuGeneric("startchaos10s", "Chaos(10s)", SetChaos10s));
+            Objects.Add(new MenuGeneric("startchaos15s", "Chaos(15s)", SetChaos15s));
+            Objects.Add(new MenuGeneric("startoffline", "Offline", SetOffline));
             NameMenuManager.AddToPageBulk("mandatorytwitchshits", Objects);
 
 
-            Objects = new List<Name_MenuObject>();
+            Objects = new List<MenuObject>();
             NameMenuManager.AddPage("mtm101twitchoptions","options");
-            Objects.Add(new Name_MenuOption("showcmds", "Show CMDS", SettingsManager.ShowCommands, ToggleCMDS));
-            Objects.Add(new Name_MenuOption("showvotes", "Show Votes", SettingsManager.ShowVotes, ToggleVotes));
-            Objects.Add(new Name_MenuOption("togglefairoffline", "Balanced Offline", SettingsManager.OfflineUseWeighted, ToggleWeights));
+            Objects.Add(new MenuOption("showcmds", "Show CMDS", SettingsManager.ShowCommands, ToggleCMDS));
+            Objects.Add(new MenuOption("showvotes", "Show Votes", SettingsManager.ShowVotes, ToggleVotes));
+            Objects.Add(new MenuOption("togglefairoffline", "Balanced Offline", SettingsManager.OfflineUseWeighted, ToggleWeights));
             NameMenuManager.AddToPageBulk("mtm101twitchoptions",Objects);
-            NameMenuManager.AddToPage("options",new Name_MenuFolder("totwitchoptions","BB+ Twitch","mtm101twitchoptions"));
+            NameMenuManager.AddToPage("options",new MenuFolder("totwitchoptions","BB+ Twitch","mtm101twitchoptions"));
 
 
             harmony.PatchAll();

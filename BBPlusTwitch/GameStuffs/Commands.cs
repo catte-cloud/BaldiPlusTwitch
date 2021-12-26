@@ -41,15 +41,17 @@ namespace BBPlusTwitch
             TwitchManager.AddCommand("mute", MuteGame, 50);
             TwitchManager.AddCommand("doevent", ActivateEvent, 50);
             TwitchManager.AddCommand("speedboost", Whiplash, 25);
-            TwitchManager.AddCommand("maketempangry", AngerBaldi, 20);
+			TwitchManager.AddCommand("maketempangry", AngerBaldi, 20);
+			TwitchManager.AddCommand("forceuse", ForceUse, 10);
 
 
 
 
 
-            //the following commands can only be executed in johnny's shop
 
-            TwitchManager.AddCommand("shop-forcebuy", ForceBuy, 12);
+			//the following commands can only be executed in johnny's shop
+
+			TwitchManager.AddCommand("shop-forcebuy", ForceBuy, 12);
 
             //various commands for the farm minigame
 
@@ -73,9 +75,10 @@ namespace BBPlusTwitch
             TwitchManager.AddWeightedCommand("mute", 5);
             TwitchManager.AddWeightedCommand("doevent", 1, "Flood", "Snap", "Lockdown", "Party", "Gravity", "Fog");
             TwitchManager.AddWeightedCommand("speedboost", 8);
-            TwitchManager.AddWeightedCommand("maketempangry", 8);
+			TwitchManager.AddWeightedCommand("maketempangry", 8);
+			TwitchManager.AddWeightedCommand("forceuse", 5);
 
-        }
+		}
 
         public static bool AddYTPs(string person, string number)
         {
@@ -112,7 +115,21 @@ namespace BBPlusTwitch
             return true;
         }
 
-        public static bool ForceBuy(string person, string number)
+		public static bool ForceUse(string person, string param)
+		{
+			if (!Singleton<CoreGameManager>.Instance)
+			{
+				return false;
+			}
+
+			PlayerManager player = Singleton<CoreGameManager>.Instance.GetPlayer(0);
+
+			player.itm.UseItem();
+
+			return true;
+		}
+
+		public static bool ForceBuy(string person, string number)
         {
             StoreScreen shop = GameObject.FindObjectOfType<StoreScreen>();
             if ((!int.TryParse(number, out int num)) || shop == null)

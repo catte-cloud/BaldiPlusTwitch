@@ -11,9 +11,6 @@
     <Reference Include="Assembly-CSharp">
       <HintPath>..\Dependecies\Assembly-CSharp.dll</HintPath>
     </Reference>
-    <Reference Include="BBPlusNameAPI">
-      <HintPath>..\Dependecies\BBPlusNameAPI.dll</HintPath>
-    </Reference>
     <Reference Include="BepInEx">
       <HintPath>..\Dependecies\BepInEx.dll</HintPath>
     </Reference>
@@ -25,6 +22,9 @@
     </Reference>
     <Reference Include="HarmonyXInterop">
       <HintPath>..\Dependecies\HarmonyXInterop.dll</HintPath>
+    </Reference>
+    <Reference Include="MTM101BMDE">
+      <HintPath>..\Dependecies\MTM101BMDE.dll</HintPath>
     </Reference>
     <Reference Include="Rewired_Core">
       <HintPath>..\Dependecies\Rewired_Core.dll</HintPath>
