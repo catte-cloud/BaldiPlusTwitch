@@ -431,6 +431,7 @@ namespace BBPlusTwitch
             item.nameKey = Singleton<LocalizationManager>.Instance.GetLocalizedText(item.nameKey) + "\n(" + person + ")";
 
             item.descKey = Singleton<LocalizationManager>.Instance.GetLocalizedText(item.descKey) + "\n(" + person + " from Twitch chat gifted this to you! How nice!)";
+
             Singleton<CoreGameManager>.Instance.GetPlayer(0).itm.AddItem(item);
 
 
