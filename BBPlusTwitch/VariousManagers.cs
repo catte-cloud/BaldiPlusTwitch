@@ -96,6 +96,10 @@ namespace BBPlusTwitch
 
         private static void Load()
         {
+            #if BBCR
+                ShowCommandsPriv = true;
+                return;
+            #endif
             if (HasAlreadyLoaded)
             {
                 return;
@@ -161,7 +165,9 @@ namespace BBPlusTwitch
     public static class GeneralBaldiStuff
     {
         public static readonly ItemObject[] Items = Resources.FindObjectsOfTypeAll<ItemObject>();
+        #if !BBCR
         public static readonly FieldTripObject[] FieldTrips = Resources.FindObjectsOfTypeAll<FieldTripObject>();
+        #endif
         public static RandomEvent[] RandomEvents;
 
 

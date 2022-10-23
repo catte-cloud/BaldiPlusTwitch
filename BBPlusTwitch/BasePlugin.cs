@@ -16,7 +16,7 @@ using System.Collections.Generic;
 
 namespace BBPlusTwitch
 {
-    [BepInPlugin("mtm101.rulerp.bbplus.balditwitch", "BB+ Twitch Intergration", "1.2.0.0")]
+    [BepInPlugin("mtm101.rulerp.bbplus.balditwitch", "BB+ Twitch Intergration", "1.3.0.0")]
 
 
 
@@ -27,6 +27,11 @@ namespace BBPlusTwitch
         public static ConfigEntry<string> UserName;
 
         public static ConfigEntry<string> Oath;
+
+        #if BBCR
+        public static ConfigEntry<string> DefaultMode;
+        public static ConfigEntry<float> Cooldown;
+        #endif
 
         public static BaldiTwitch Instance;
 
@@ -142,6 +147,19 @@ namespace BBPlusTwitch
 
                 ), "oath:https://twitchapps.com/tmi/");
 
+            #if BBCR
+            DefaultMode = Config.Bind(new ConfigDefinition(
+                "Config",
+                "Default Mode"
+
+                ), "Chaos",new ConfigDescription("Valid settings are:\nVanilla\nSpeedy\nChaos\nOffline\nAnything else will cause a crash."));
+            Cooldown = Config.Bind(new ConfigDefinition(
+                "Config",
+                "Chaos Mode Command Cooldown"
+
+                ), 5f);
+            #endif
+
             Harmony harmony = new Harmony("mtm101.rulerp.bbplus.balditwitch");
 
             NameMenuManager.AddPreStartPage("mandatorytwitchshits",true);
@@ -167,6 +185,14 @@ namespace BBPlusTwitch
 
             harmony.PatchAll();
 
+            #if BBCR
+            TwitchMode modtochangeto = (TwitchMode)Enum.Parse(typeof(TwitchMode), DefaultMode.Value);
+            UnityEngine.Debug.Log(modtochangeto);
+            SetFunnyMode(modtochangeto, modtochangeto != TwitchMode.Chaos ? (modtochangeto == TwitchMode.Offline ? 5f : 0f) : Cooldown.Value);
+            #endif
+
+            //SetVanilla();
+
         }
-    }
+}
 }

@@ -1,11 +1,11 @@
 ﻿using System;
 using System.Diagnostics;
+using System.Linq;
 using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Net;
 using System.IO;
 using System.Text;
-using System.Linq;
 //BepInEx stuff
 using BepInEx;
 using BepInEx.Logging;
@@ -26,7 +26,9 @@ namespace BBPlusTwitch
     {
         public static void AddCommands()
         {
+            #if !BBCR
             TwitchManager.AddCommand("addytps", AddYTPs, 4);
+            #endif
             TwitchManager.AddCommand("giveitem", GiveItem, 5);
             TwitchManager.AddCommand("removeitem", RemoveItem, 8);
             TwitchManager.AddCommand("collectbook", CollectNotebook, 10);
@@ -43,15 +45,21 @@ namespace BBPlusTwitch
             TwitchManager.AddCommand("speedboost", Whiplash, 25);
 			TwitchManager.AddCommand("maketempangry", AngerBaldi, 20);
 			TwitchManager.AddCommand("forceuse", ForceUse, 10);
+            TwitchManager.AddCommand("togglelights",ToggleRandomLightsCommand,30);
+            TwitchManager.AddCommand("colorscrew", ScrewWithColorsBad, 50);
+            TwitchManager.AddCommand("colorunscrew", ScrewWithColorsGood, 30);
+            TwitchManager.AddCommand("wind", CreateWind, 50);
 
 
 
 
 
 
-			//the following commands can only be executed in johnny's shop
+            //the following commands can only be executed in johnny's shop
 
+            #if !BBCR
 			TwitchManager.AddCommand("shop-forcebuy", ForceBuy, 12);
+            #endif
 
             //various commands for the farm minigame
 
@@ -61,7 +69,9 @@ namespace BBPlusTwitch
 
             //adds the weighted command thingies
 
+            #if !BBCR
             TwitchManager.AddWeightedCommand("addytps", 20, "-200", "-150", "-100", "-69", "-50", "50", "69", "100", "150", "200", "1", "-1");
+            #endif
             TwitchManager.AddWeightedCommand("giveitem", 20, Enum.GetNames(typeof(Items)));
             TwitchManager.AddWeightedCommand("removeitem",18);
             TwitchManager.AddWeightedCommand("collectbook", 15);
@@ -77,8 +87,11 @@ namespace BBPlusTwitch
             TwitchManager.AddWeightedCommand("speedboost", 8);
 			TwitchManager.AddWeightedCommand("maketempangry", 8);
 			TwitchManager.AddWeightedCommand("forceuse", 5);
+            TwitchManager.AddWeightedCommand("colorscrew", 7);
+            TwitchManager.AddWeightedCommand("colorunscrew", 7);
+            TwitchManager.AddWeightedCommand("wind", 9, "1","2","3","4","5","6","7","8","9","10","0.5","3.25");
 
-		}
+        }
 
         public static bool AddYTPs(string person, string number)
         {
@@ -128,8 +141,8 @@ namespace BBPlusTwitch
 
 			return true;
 		}
-
-		public static bool ForceBuy(string person, string number)
+        #if !BBCR
+        public static bool ForceBuy(string person, string number)
         {
             StoreScreen shop = GameObject.FindObjectOfType<StoreScreen>();
             if ((!int.TryParse(number, out int num)) || shop == null)
@@ -137,6 +150,45 @@ namespace BBPlusTwitch
                 return false;
             }
             shop.BuyItem(num);
+            return true;
+        }
+        #endif
+
+        public static bool ScrewWithColorsBad(string person, string number)
+        {
+            return ScrewWithColors(0.02f);
+        }
+        public static bool ScrewWithColorsGood(string person, string number)
+        {
+            return ScrewWithColors(-0.03f);
+        }
+
+        public static bool CreateWind(string person, string number)
+        {
+            if (!Singleton<CoreGameManager>.Instance)
+            {
+                return false;
+            }
+
+
+            bool parsed_properly = float.TryParse(number, out float time);
+
+            if (!parsed_properly) return false;
+
+            TwitchWind wind = Singleton<CoreGameManager>.Instance.GetPlayer(0).gameObject.AddComponent<TwitchWind>();
+
+            wind.Init(time);
+
+            return true;
+        }
+
+        public static bool ScrewWithColors(float percent_increase)
+        {
+            Shader.SetGlobalInt("_ColorGlitching", 1);
+            Shader.SetGlobalInt("_ColorGlitchVal", UnityEngine.Random.Range(0, 4096));
+            Shader.SetGlobalFloat("_ColorGlitchPercent", Mathf.Clamp(Shader.GetGlobalFloat("_ColorGlitchPercent") + percent_increase,0f,1f));
+            Shader.SetGlobalInt("_SpriteColorGlitching", 1);
+            Shader.SetGlobalInt("_SpriteColorGlitchVal", UnityEngine.Random.Range(0, 4096));
             return true;
         }
 
@@ -153,38 +205,6 @@ namespace BBPlusTwitch
             return true;
         }
 
-        public static bool Farm_SetAnimal(string person, string animal) //theres some weird conversion error here and I don't know where it is.
-        {
-            if ((!Enum.TryParse(animal, true, out FarmAnimalType ani)))
-            {
-                ani = FarmAnimalType.Chicken;
-            }
-            if (ani == FarmAnimalType.Gorilla)
-            {
-                ani = FarmAnimalType.Cow;
-            }
-            if (!Singleton<BaseGameManager>.Instance || !Singleton<CoreGameManager>.Instance)
-            {
-                return false;
-            }
-            UnityEngine.Debug.Log("got right before basegame manager");
-            if (!(bool)Singleton<BaseGameManager>.Instance.currentTrip)
-            {
-                return false;
-            }
-            UnityEngine.Debug.Log("got here time to commit set animal");
-            if (Singleton<BaseGameManager>.Instance.currentTrip.GetType() == typeof(FarmTripManager))
-            {
-                FarmTripManager farm = (FarmTripManager)Singleton<BaseGameManager>.Instance.currentTrip;
-                FieldInfo currentanimal = AccessTools.Field(typeof(FarmTripManager), "currentAnimal");
-                FieldInfo currenticon = AccessTools.Field(typeof(FarmTripManager), "currentIcon");
-                currentanimal.SetValue(farm,ani);
-                ((Image)currenticon.GetValue(farm)).sprite = farm.GetAnimalSprite(ani);
-                return true;
-            }
-            return false;
-        }
-
         public static bool OhGodOhFuck(string person, string number)
         {
             if (!Singleton<BaseGameManager>.Instance || !Singleton<CoreGameManager>.Instance)
@@ -197,6 +217,67 @@ namespace BBPlusTwitch
                 npc.TargetPosition(Singleton<CoreGameManager>.Instance.GetPlayer(0).transform.position);
             }
             return true;
+        }
+
+        public static bool ToggleRandomLightsCommand(string person, string number)
+        {
+            if (!Singleton<BaseGameManager>.Instance || !Singleton<CoreGameManager>.Instance)
+            {
+                return false;
+            }
+            EnvironmentController ec = Singleton<BaseGameManager>.Instance.Ec;
+
+            ToggleRandomLights(ec, UnityEngine.Random.Range(30, 90));
+
+            return true;
+        }
+
+        public static void ToggleRandomLights(EnvironmentController ec, int tilestochange) //toggle the amount of lights
+        {
+            TileController[] tiles = ec.tiles.ConvertTo1d(ec.tiles.GetLength(0), ec.tiles.GetLength(1));
+            for (int i = 0; i < tilestochange; i++)
+            {
+                TileController tileToToggleLight = tiles[UnityEngine.Random.Range(0, tiles.Length - 1)];
+                if (tileToToggleLight != null)
+                {
+                    ec.SetLight(!tileToToggleLight.lightOn, tileToToggleLight);
+                }
+                else
+                {
+                    UnityEngine.Debug.Log("Miss!");
+                }
+            }
+        }
+
+        public static bool RainbowRandomLightsCommand(string person, string number)
+        {
+            if (!Singleton<BaseGameManager>.Instance || !Singleton<CoreGameManager>.Instance)
+            {
+                return false;
+            }
+            EnvironmentController ec = Singleton<BaseGameManager>.Instance.Ec;
+
+            ToggleRandomLights(ec, UnityEngine.Random.Range(15, 35));
+
+            return true;
+        }
+
+        public static void RainbowRandomLights(EnvironmentController ec, int tilestochange) //toggle the amount of lights
+        {
+            TileController[] tiles = ec.tiles.ConvertTo1d(ec.tiles.GetLength(0), ec.tiles.GetLength(1));
+            for (int i = 0; i < tilestochange; i++)
+            {
+                TileController tileToToggleLight = tiles[UnityEngine.Random.Range(0, tiles.Length - 1)];
+                if (tileToToggleLight != null)
+                {
+                    tileToToggleLight.lightColor = new Color(UnityEngine.Random.Range(0.2f,1f), UnityEngine.Random.Range(0.2f, 1f), UnityEngine.Random.Range(0.2f, 1f));
+                    ec.SetLight(tileToToggleLight.lightOn, tileToToggleLight);
+                }
+                else
+                {
+                    UnityEngine.Debug.Log("Miss!");
+                }
+            }
         }
 
         public static bool MakeCharacterSus(string person, string param)
@@ -341,10 +422,12 @@ namespace BBPlusTwitch
             {
                 return false;
             }
+            #if !BBCR
             if (GameObject.FindObjectOfType<StoreScreen>() != null) //could cause problems
             {
                 return false;
             }
+            #endif
             ItemManager itemman = Singleton<CoreGameManager>.Instance.GetPlayer(0).itm;
             int TotalSellPrice = 0;
             for (int i=0; i < itemman.items.Length; i++)
@@ -437,31 +520,6 @@ namespace BBPlusTwitch
 
             return true;
         }
-
-        //so close but i need to figure out how to detect "fake" fieldtrip entrances and have them give the items directly.
-        public static bool StartFieldtrip(string person, string tr)
-        {
-            if ((!Enum.TryParse(tr, true, out FieldTrips tri)) || !Singleton<CoreGameManager>.Instance)
-            {
-                tri = FieldTrips.Camping;
-            }
-            FieldTripObject trip = GeneralBaldiStuff.FieldTrips.ToList().Find(x => x.trip == tri);
-            if (trip == null)
-            {
-                trip = GeneralBaldiStuff.FieldTrips.ToList().Find(x => x.trip == FieldTrips.Camping);
-                if (trip == null)
-                {
-                    UnityEngine.Debug.LogError("Something has gone horribly wrong here!");
-                    return false;
-                }
-            }
-
-            Singleton<BaseGameManager>.Instance.LoadFieldTrip(GameObject.Instantiate(trip),new TripEntrance());
-
-
-            return true;
-        }
-
         public static bool Teleport(string person, string enu)
         {
             ItemObject item = GeneralBaldiStuff.Items.ToList().Find(x => x.itemType == Items.Teleporter);

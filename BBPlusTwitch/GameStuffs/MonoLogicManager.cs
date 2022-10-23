@@ -21,6 +21,35 @@ using System.Linq;
 
 namespace BBPlusTwitch
 {
+
+    public class TwitchWind : MonoBehaviour
+    {
+        public MovementModifier mm;
+        public bool init = false;
+
+        public float TimeUntilVanish;
+
+        public void Init(float intensity)
+        {
+            intensity = Mathf.Clamp(intensity, 0.1f, 10f);
+            mm = new MovementModifier(new Vector3(UnityEngine.Random.Range(-intensity, intensity), 0f, UnityEngine.Random.Range(-intensity, intensity)), 1f);
+            Singleton<CoreGameManager>.Instance.GetPlayer(0).plm.am.moveMods.Add(mm);
+            TimeUntilVanish = Mathf.Clamp(UnityEngine.Random.Range(5f / (intensity * 2), 20f / (intensity * 2)),0.5f,30f);
+            init = true;
+        }
+
+        private void Update()
+        {
+            if (!init) return;
+            TimeUntilVanish -= Time.deltaTime;
+            if (TimeUntilVanish < 0f)
+            {
+                Singleton<CoreGameManager>.Instance.GetPlayer(0).plm.am.moveMods.Remove(mm);
+                Destroy(this);
+            }
+        }
+    }
+
     public class MonoLogicManager : MonoBehaviour //for anything that needs an update function
     {
         public float TimeUntilUnmute = 0f;
